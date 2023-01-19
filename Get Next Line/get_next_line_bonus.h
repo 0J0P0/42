@@ -1,42 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eralonso <eralonso@student.42barcel>       +#+  +:+       +#+        */
+/*   By: mperez-a <mperez-a@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/04 19:49:22 by eralonso          #+#    #+#             */
-/*   Updated: 2022/11/10 11:46:51 by eralonso         ###   ########.fr       */
+/*   Created: 2022/11/14 12:11:30 by mperez-a          #+#    #+#             */
+/*   Updated: 2022/11/15 17:31:26 by mperez-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_BONUS_H
 # define GET_NEXT_LINE_BONUS_H
 
-# include	<unistd.h>
-# include	<stdlib.h>
-# include	<limits.h>
+# include <fcntl.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <limits.h>
 
-typedef struct s_data {
-	char	*buffer;
-	char	*line;
-	int		fd;
-	int		err;
-}			t_data;
-
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE (int)1
-# endif
-
-void	ft_read_file(t_data *data);
-void	ft_get_line(t_data *data);
-void	ft_clean_buffer(t_data *data);
+size_t	ft_strlen(char *s);
+char	*ft_strchr(char *s, int c);
+char	*ft_strjoin(char *str_file, char *buffer);
 char	*get_next_line(int fd);
+char	*read_file(int fd, char *str_file);
+char	*read_line(char *str_file);
+char	*read_left(char	*str_file);
 void	*ft_free(char **str);
-int		ft_strlen(char *str);
-char	*ft_strjoin(char *s1, char *s2);
-char	*ft_strdup(char *str);
-char	*ft_strchr(char *str, char c);
-char	*ft_substr(char *s, int start, int len);
 
 #endif

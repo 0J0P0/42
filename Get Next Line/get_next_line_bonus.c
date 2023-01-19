@@ -5,111 +5,114 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jzaldiva <jzaldiva@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/04 19:50:46 by eralonso          #+#    #+#             */
-/*   Updated: 2023/01/19 21:14:32 by jzaldiva         ###   ########.fr       */
+/*   Created: 2022/11/14 12:08:25 by mperez-a          #+#    #+#             */
+/*   Updated: 2023/01/19 21:23:55 by jzaldiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include	"get_next_line_bonus.h"
+#include "get_next_line_bonus.h"
 
 void	*ft_free(char **str)
 {
-	if (*str)
-	{
-		free(*str);
-		*str = NULL;
-		str = NULL;
-		return (NULL);
-	}
+	free(*str);
+	*str = NULL;
 	return (NULL);
 }
 
-void	ft_read_file(t_data *data)
+char	*read_file(int fd, char *str_file)
 {
-	int	bytes;
+	int		bytes;
+	char	*buffer;
 
-	data->line = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!data->line)
-		data->err = !ft_free(&(data->buffer));
 	bytes = 1;
-	while (!data->err && bytes && !ft_strchr(data->buffer, '\n'))
+	buffer = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
+	if (!buffer)
+		return (ft_free(&str_file));
+	while (!ft_strchr(str_file, '\n') && bytes != 0)
 	{
-		bytes = read(data->fd, data->line, BUFFER_SIZE);
+		bytes = read(fd, buffer, BUFFER_SIZE);
 		if (bytes == -1)
-			data->err = !ft_free(&(data->buffer));
-		else
 		{
-			if (*data->line || data->buffer)
-			{
-				data->line[bytes] = '\0';
-				data->buffer = ft_strjoin(data->buffer, data->line);
-				if (!data->buffer)
-					data->err = 1;
-			}
+			free(buffer);
+			return (ft_free(&str_file));
 		}
+		buffer[bytes] = '\0';
+		str_file = ft_strjoin(str_file, buffer);
 	}
-	ft_free(&(data->line));
+	free(buffer);
+	return (str_file);
 }
 
-void	ft_get_line(t_data *data)
+char	*read_line(char *str_file)
 {
-	int	len;
+	int		i;
+	char	*str;
 
-	if (!*data->buffer)
+	i = 0;
+	if (str_file[i] == '\0')
+		return (NULL);
+	while (str_file[i] && str_file[i] != '\n')
+		i++;
+	if (str_file[i] != '\n')
+		str = (char *)malloc(sizeof(char) * i + 1);
+	else
+		str = (char *)malloc(sizeof(char) * i + 2);
+	if (!str)
+		return (NULL);
+	i = 0;
+	while (str_file[i] && str_file[i] != '\n')
 	{
-		data->line = NULL;
-		return ;
+		str[i] = str_file[i];
+		i++;
 	}
-	len = 0;
-	while (data->buffer[len] && data->buffer[len] != '\n')
-		len++;
-	data->line = ft_substr(data->buffer, 0, len + 1);
-	if (!data->line)
-		data->err = 1;
+	if (str_file[i] == '\n')
+		str[i++] = '\n';
+	str[i] = '\0';
+	return (str);
 }
 
-void	ft_clean_buffer(t_data *data)
+char	*read_left(char *str_file)
 {
-	char	*aux;
-	int		start;
+	int		i;
+	int		j;
+	char	*str;
 
-	start = 0;
-	while (data->buffer[start] && data->buffer[start] != '\n')
-		start++;
-	aux = ft_strdup(data->buffer);
-	if (!aux)
+	i = 0;
+	j = 0;
+	while (str_file[i] && str_file[i] != '\n')
+		i++;
+	if (str_file[i] == '\0')
+		return (ft_free(&str_file));
+	str = (char *)malloc(sizeof(char) * (ft_strlen(str_file) - i + 1));
+	if (!str)
+		return (ft_free(&str_file));
+	i++;
+	while (str_file[i])
+		str[j++] = str_file[i++];
+	if (j > 0)
+		str[j] = '\0';
+	else
 	{
-		data->err = !ft_free(&(data->buffer));
-		return ;
+		free(str);
+		return (ft_free(&str_file));
 	}
-	ft_free(&(data->buffer));
-	data->buffer = ft_substr(aux, start + 1, (ft_strlen(aux) - start));
-	if (!data->buffer)
-		data->err = 1;
-	ft_free(&aux);
+	ft_free(&str_file);
+	return (str);
 }
 
 char	*get_next_line(int fd)
 {
-	static t_data	data[OPEN_MAX];
+	static char	*str_file[OPEN_MAX];
+	char		*line;
 
-	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (!(data[fd]).buffer)
-	{
-		(data[fd]).buffer = ft_strdup("");
-		if (!(data[fd]).buffer)
-			return (NULL);
-	}
-	(data[fd]).fd = fd;
-	(data[fd]).err = 0;
-	if (!(data[fd]).err)
-		ft_read_file(&(data[fd]));
-	if (!(data[fd]).err)
-		ft_get_line(&(data[fd]));
-	if (!(data[fd]).err)
-		ft_clean_buffer(&(data[fd]));
-	if ((data[fd]).err || !ft_strchr((data[fd]).line, '\n'))
-		ft_free(&((data[fd]).buffer));
-	return ((data[fd]).line);
+	str_file[fd] = read_file(fd, str_file[fd]);
+	if (!str_file[fd])
+		return (NULL);
+	line = read_line(str_file[fd]);
+	if (!line)
+		return (ft_free(&str_file[fd]));
+	str_file[fd] = read_left(str_file[fd]);
+	return (line);
 }
