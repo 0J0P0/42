@@ -3,75 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jzaldiva <jzaldiva@student.42barcel>       +#+  +:+       +#+        */
+/*   By: jzaldiva <jzaldiva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/14 12:08:25 by mperez-a          #+#    #+#             */
-/*   Updated: 2023/01/19 21:23:55 by jzaldiva         ###   ########.fr       */
+/*   Created: 2022/11/14 09:21:41 by mperez-a          #+#    #+#             */
+/*   Updated: 2023/01/20 09:41:58 by jzaldiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line_bonus.h"
+#include "get_next_line.h"
 
-void	*ft_free(char **str)
-{
-	free(*str);
-	*str = NULL;
-	return (NULL);
-}
-
-char	*read_file(int fd, char *str_file)
-{
-	int		bytes;
-	char	*buffer;
-
-	bytes = 1;
-	buffer = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
-	if (!buffer)
-		return (ft_free(&str_file));
-	while (!ft_strchr(str_file, '\n') && bytes != 0)
-	{
-		bytes = read(fd, buffer, BUFFER_SIZE);
-		if (bytes == -1)
-		{
-			free(buffer);
-			return (ft_free(&str_file));
-		}
-		buffer[bytes] = '\0';
-		str_file = ft_strjoin(str_file, buffer);
-	}
-	free(buffer);
-	return (str_file);
-}
-
-char	*read_line(char *str_file)
-{
-	int		i;
-	char	*str;
-
-	i = 0;
-	if (str_file[i] == '\0')
-		return (NULL);
-	while (str_file[i] && str_file[i] != '\n')
-		i++;
-	if (str_file[i] != '\n')
-		str = (char *)malloc(sizeof(char) * i + 1);
-	else
-		str = (char *)malloc(sizeof(char) * i + 2);
-	if (!str)
-		return (NULL);
-	i = 0;
-	while (str_file[i] && str_file[i] != '\n')
-	{
-		str[i] = str_file[i];
-		i++;
-	}
-	if (str_file[i] == '\n')
-		str[i++] = '\n';
-	str[i] = '\0';
-	return (str);
-}
-
-char	*read_left(char *str_file)
+char	*update_line(char *line)
 {
 	int		i;
 	int		j;
@@ -79,40 +20,92 @@ char	*read_left(char *str_file)
 
 	i = 0;
 	j = 0;
-	while (str_file[i] && str_file[i] != '\n')
+	while (line[i] && line[i] != '\n')
 		i++;
-	if (str_file[i] == '\0')
-		return (ft_free(&str_file));
-	str = (char *)malloc(sizeof(char) * (ft_strlen(str_file) - i + 1));
+	if (line[i] == '\0')
+		return (ft_free(&line));
+	str = (char *)malloc(sizeof(char) * (ft_strlen(line) - i + 1));
 	if (!str)
-		return (ft_free(&str_file));
+		return (ft_free(&line));
 	i++;
-	while (str_file[i])
-		str[j++] = str_file[i++];
+	while (line[i])
+		str[j++] = line[i++];
 	if (j > 0)
 		str[j] = '\0';
 	else
 	{
 		free(str);
-		return (ft_free(&str_file));
+		return (ft_free(&line));
 	}
-	ft_free(&str_file);
+	ft_free(&line);
 	return (str);
+}
+
+char	*clean_line(char *line)
+{
+	int		i;
+	char	*str;
+
+	i = 0;
+	if (line[i] == '\0')
+		return (NULL);
+	while (line[i] && line[i] != '\n')
+		i++;
+	if (line[i] != '\n')
+		str = (char *)malloc(sizeof(char) * (i + 1));
+	else
+		str = (char *)malloc(sizeof(char) * (i + 2));
+	if (!str)
+		return (NULL);
+	i = 0;
+	while (line[i] && line[i] != '\n')
+	{
+		str[i] = line[i];
+		i++;
+	}
+	if (line[i] == '\n')
+		str[i++] = '\n';
+	str[i] = '\0';
+	return (str);
+}
+
+char	*read_line(int fd, char *line)
+{
+	int		bytes;
+	char	*buffer;
+
+	bytes = 1;
+	buffer = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
+	if (!buffer)
+		return (ft_free(&line));
+	while (!ft_strchr(line, '\n') && bytes != 0)
+	{
+		bytes = read(fd, buffer, BUFFER_SIZE);
+		if (bytes == -1)
+		{
+			free(buffer);
+			return (ft_free(&line));
+		}
+		buffer[bytes] = '\0';
+		line = ft_strjoin(line, buffer);
+	}
+	free(buffer);
+	return (line);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*str_file[OPEN_MAX];
-	char		*line;
+	static char	*line[OPEN_MAX];
+	char		*tmp;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	str_file[fd] = read_file(fd, str_file[fd]);
-	if (!str_file[fd])
+	line[fd] = read_line(fd, line[fd]);
+	if (!line[fd])
 		return (NULL);
-	line = read_line(str_file[fd]);
-	if (!line)
-		return (ft_free(&str_file[fd]));
-	str_file[fd] = read_left(str_file[fd]);
-	return (line);
+	tmp = clean_line(line[fd]);
+	if (!tmp)
+		return (ft_free(&line[fd]));
+	line[fd] = update_line(line[fd]);
+	return (tmp);
 }

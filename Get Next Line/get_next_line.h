@@ -6,7 +6,7 @@
 /*   By: jzaldiva <jzaldiva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 09:14:55 by jzaldiva          #+#    #+#             */
-/*   Updated: 2023/01/20 09:16:03 by jzaldiva         ###   ########.fr       */
+/*   Updated: 2023/01/20 09:37:24 by jzaldiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,16 @@ size_t	ft_strlen(char *s);
 
 void	*ft_free(char **str);
 
-char	*get_next_line(int fd);
-
 char	*ft_strchr(char *s, int c);
 
-char	*read_line(char *str_file);
+char	*ft_strjoin(char *line, char *buffer);
 
-char	*read_left(char	*str_file);
+char	*get_next_line(int fd);
 
-char	*read_file(int fd, char *str_file);
+char	*update_line(char *line);
 
-char	*ft_strjoin(char *str_file, char *buffer);
+char	*clean_line(char	*line);
+
+char	*read_line(int fd, char *line);
 
 #endif
