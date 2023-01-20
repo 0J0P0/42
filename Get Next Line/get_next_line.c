@@ -3,21 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mperez-a <mperez-a@student.42barcel>       +#+  +:+       +#+        */
+/*   By: jzaldiva <jzaldiva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 09:21:41 by mperez-a          #+#    #+#             */
-/*   Updated: 2022/11/15 17:26:24 by mperez-a         ###   ########.fr       */
+/*   Updated: 2023/01/20 09:17:48 by jzaldiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-void	*ft_free(char **str)
-{
-	free(*str);
-	*str = NULL;
-	return (NULL);
-}
 
 char	*read_file(int fd, char *str_file)
 {
