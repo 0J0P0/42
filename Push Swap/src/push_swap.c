@@ -45,33 +45,56 @@ void	print_stack(t_stack *stack)
     // free(node);
 }
 
-// Sort the stack. Bubble sort using both stacks.
+// Sort the stack a, using the stack b as a buffer.
 void	sort_stack(t_stack *stack_a, t_stack *stack_b)
 {
-	int		i;
-	int		j;
-	int		size;
+	int i;
+	int j;
+	int k;
+	int min;
+	int size;
+	int *array;
 
 	size = stack_a->size;
+	array = (int *)malloc(sizeof(int) * size);
+	if (!array)
+		ft_error();
+	i = 0;
+	while (i < size)
+	{
+		array[i] = stack_a->top->value;
+		// ft_rx(stack_a);
+		ft_px(stack_b, stack_a);
+		i++;
+	}
 	i = 0;
 	while (i < size)
 	{
 		j = 0;
-		while (j < size - i - 1)
+		min = array[0];
+		while (j < size - i)
 		{
-			if (stack_a->top->value > stack_a->top->next->value)
-				ft_sx(stack_a);
-			ft_px(stack_b, stack_a);
+			if (array[j] < min)
+				min = array[j];
 			j++;
 		}
-		while (j > 0)
+		k = 0;
+		while (k < size - i)
 		{
-			ft_px(stack_a, stack_b);
-			j--;
+			if (array[k] == min)
+			{
+				ft_px(stack_b, stack_a);
+				array[k] = array[size - i - 1];
+				break ;
+			}
+			ft_rx(stack_a);
+			k++;
 		}
 		i++;
 	}
+	free(array);
 }
+
 
 // Initialize a stack.
 t_stack	*init_stack(int argc, char *argv[], char id)
@@ -141,7 +164,7 @@ int	main(int argc, char *argv[])
 	stack_a = init_stack(argc, argv, 'a');
 	stack_b = init_stack(0, NULL, 'b');
 
-	// Sort the stack a.
+	// Sort the stack a, using stack b.
 	sort_stack(stack_a, stack_b);
 
 	// Print the stacks.
