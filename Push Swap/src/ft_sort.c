@@ -54,7 +54,10 @@ void	ft_sort_three(t_stack *stack_a)
 			ft_sx(stack_a);
 		// If the top node is smaller than the middle node and bigger than the bottom node.
 		else if (node->value < node->next->value && node->value > node->next->next->value)
-			ft_rrx(stack_a);
+		{
+			ft_rx(stack_a);
+			ft_rx(stack_a);
+		}
 	}
 }
 
@@ -65,6 +68,8 @@ void	ft_sort_four(t_stack *stack_a, t_stack *stack_b)
 	ft_px(stack_b, stack_a);
 	ft_sort_three(stack_a);
 	ft_px(stack_a, stack_b);
+	if (!ft_is_sorted(stack_a))
+		ft_sort_four(stack_a, stack_b);
 }
 
 // Sort the stack a, using the stack b as a buffer. Stack b is initially empty and must be empty at the end. 
@@ -74,9 +79,6 @@ void	ft_sort_four(t_stack *stack_a, t_stack *stack_b)
 // 2. Merge the segments into a sorted stack a.
 void	ft_sort_stack(t_stack *stack_a, t_stack *stack_b)
 {
-	// int		i;
-	// int		segment_size;
-	// int		segment_count;
 	// If the stack a is empty or contains only one element, return.
 	if (stack_a->size == 0 || stack_a->size == 1  || ft_is_sorted(stack_a))
 		return ;
@@ -89,20 +91,4 @@ void	ft_sort_stack(t_stack *stack_a, t_stack *stack_b)
 	// If the stack a contains only four elements, sort the stack a.
 	else if (stack_a->size == 4)
 		ft_sort_four(stack_a, stack_b);
-	
-	// If the stack a contains more than five elements, sort the stack a.
-	// Divide the stack a into segments.
-	// segment_size = 5;
-	// segment_count = stack_a->size / segment_size;
-	// if (stack_a->size % segment_size != 0)
-	// 	segment_count++;
-	// // Sort each segment using the stack b as a buffer.
-	// i = 0;
-	// while (i < segment_count)
-	// {
-	// 	sort_segment(stack_a, stack_b, segment_size);
-	// 	i++;
-	// }
-	// // Merge the segments into a sorted stack a.
-	// merge_segments(stack_a, stack_b, segment_count);
 }
