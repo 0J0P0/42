@@ -62,20 +62,8 @@ void	ft_sort_three(t_stack *stack_a)
 void	ft_sort_four(t_stack *stack_a, t_stack *stack_b)
 {
 	ft_sort_three(stack_a);
-	ft_printf("SORT THREE 1-----------------\n");
-	ft_print_stack(stack_a);
-	ft_print_stack(stack_b);
-	ft_printf("-----------------\n");
 	ft_px(stack_b, stack_a);
-	ft_printf("MOVE TOP TO B-----------------\n");
-	ft_print_stack(stack_a);
-	ft_print_stack(stack_b);
-	ft_printf("-----------------\n");
 	ft_sort_three(stack_a);
-	ft_printf("SORT THREE 2-----------------\n");
-	ft_print_stack(stack_a);
-	ft_print_stack(stack_b);
-	ft_printf("-----------------\n");
 	ft_px(stack_a, stack_b);
 }
 
@@ -104,7 +92,6 @@ void	ft_sort_stack(t_stack *stack_a, t_stack *stack_b)
 	
 	// If the stack a contains more than five elements, sort the stack a.
 	// Divide the stack a into segments.
-	ft_printf("size b = %d\n\n", stack_b->size);
 	// segment_size = 5;
 	// segment_count = stack_a->size / segment_size;
 	// if (stack_a->size % segment_size != 0)

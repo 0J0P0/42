@@ -80,7 +80,6 @@ int			ft_isdup(int argc, char *argv[], int i)
 int			ft_valid_parameters(int argc, char *argv[])
 {
 	int	i;
-
 	// If there are no parameters, end the program.
 	if (argc == 1)
 		exit(0);
