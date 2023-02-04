@@ -58,13 +58,15 @@ void	ft_rrx(t_stack *stack);
 
 void	ft_rrr(t_stack *stack_a, t_stack *stack_b);
 /******************************************************************************/
-void free_stack(t_stack *stack);
+int		ft_is_sorted(t_stack *stack);
 
-void print_stack(t_stack *stack);
+void	*ft_free_stack(t_stack *stack);
 
-void test(t_stack *stack_a, t_stack *stack_b);
+void	ft_print_stack(t_stack *stack);
 
-t_stack *init_stack(int argc, char *argv[], char id);
+t_node	*ft_init_node(int index, int value);
+
+t_stack	*ft_init_stack(int argc, char *argv[], char id);
 /******************************************************************************/
 void		ft_error(void);
 
@@ -75,6 +77,12 @@ long long	ft_atoll(const char *nptr);
 int			ft_isdup(int argc, char *argv[], int i);
 
 int			ft_valid_parameters(int argc, char *argv[]);
+/******************************************************************************/
+void	ft_sort_two(t_stack *stack_a);
+
+void	ft_sort_three(t_stack *stack_a);
+
+void	ft_sort_stack(t_stack *stack_a, t_stack *stack_b);
 /********************************* END OF FILE ********************************/
 
 # endif

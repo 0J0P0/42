@@ -35,7 +35,7 @@ SRC_DIR = src/
 OBJ_DIR = obj/
 INCLUDE	= inc/
 
-SRC_FILES	=	push_swap ft_moves ft_valid_parameters
+SRC_FILES	=	push_swap ft_moves ft_valid_parameters ft_stack ft_sort
 SRC 		= 	$(addprefix $(SRC_DIR), $(addsuffix .c, $(SRC_FILES)))
 OBJ 		= 	$(addprefix $(OBJ_DIR), $(addsuffix .o, $(SRC_FILES)))
 # **************************************************************************** #
