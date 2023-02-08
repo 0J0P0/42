@@ -1,3 +1,13 @@
+DEF_COLOR = \033[1;39m
+WHITE = \033[1m
+BLACK = \033[1;30m
+RED = \033[1;31m
+GREEN = \033[1;32m
+YELLOW = \033[1;33m
+BLUE = \033[1;34m
+PINK = \033[1;35m
+CIAN = \033[1;36m
+
 NAME = libft.a
 
 HEADER = libft.h
@@ -23,8 +33,8 @@ OBJ = ${SRC:%.c=%.o}
 OBJ_B = ${SRC_B:%.c=%.o}
 
 %.o : %.c ${HEADER} Makefile
+	@printf "${PINK}\rCompiling: ${YELLOW}$<...${DEF_COLOR}				\r"
 	@gcc ${FLAGS} -c $< -o $@
-	@echo "$(PINK)Compiling $<$(DEF_COLOR)"
 
 ${NAME}: ${OBJ}
 	@ar crs ${NAME} ${OBJ}

@@ -12,7 +12,6 @@
 
 #include "../inc/pipex.h"
 
-
 // Function that creates the struct and initializes it with the data from the arguments.
 t_pipex	*init_pipex(char **argv)
 {
@@ -23,15 +22,18 @@ t_pipex	*init_pipex(char **argv)
 		return (NULL);
 	data->infile = argv[1];
 	data->outfile = argv[4];
-	data->cmd1 = argv[2];
-	data->cmd2 = argv[3];
+	data->cmd1 = ft_strjoin("/usr/bin/", ft_split(argv[2], ' ')[0]);
+	data->cmd2 = ft_strjoin("/usr/bin/", ft_split(argv[3], ' ')[0]);
+	data->cmd1_arg = argv[2];
+	data->cmd2_arg = argv[3];
 	data->pid1 = 0;
 	data->pid2 = 0;
 	return (data);
 }
 
-// Function that executes the commands.
-int	pipex(t_pipex *data)
+// Function that executes the commands. It has to follow the following command structure:
+// ./pipex < input_file command1 | command2 > output_file.
+int	pipex(t_pipex *data, char **envp)
 {
 	// Create the pipe
 	if (pipe(data->fd) == -1)
@@ -42,14 +44,10 @@ int	pipex(t_pipex *data)
 		return (1);
 	if (data->pid1 == 0)
 	{
-		// Close the read end of the pipe
 		close(data->fd[0]);
-		// Redirect the standard output to the write end of the pipe
 		dup2(data->fd[1], STDOUT_FILENO);
-		// Close the write end of the pipe
 		close(data->fd[1]);
-		// Execute the first command
-		if (execve(data->cmd1, ft_split(data->cmd1, ' '), NULL) == -1)
+		if (execve(data->cmd1, ft_split(data->cmd1_arg, ' '), envp) == -1)
 			return (1);		
 	}
 	// Fork the second command
@@ -58,14 +56,10 @@ int	pipex(t_pipex *data)
 		return (1);
 	if (data->pid2 == 0)
 	{
-		// Close the write end of the pipe
 		close(data->fd[1]);
-		// Redirect the standard input to the read end of the pipe
 		dup2(data->fd[0], STDIN_FILENO);
-		// Close the read end of the pipe
 		close(data->fd[0]);
-		// Execute the second command
-		if (execve(data->cmd2, ft_split(data->cmd2, ' '), NULL) == -1)
+		if (execve(data->cmd2, ft_split(data->cmd2_arg, ' '), envp) == -1)
 			return (1);
 	}
 	// Close the read and write ends of the pipe
@@ -85,7 +79,7 @@ int	pipex(t_pipex *data)
 // 4. The second command
 // Following the example of the subject, the command would be:
 // ./pipex < input_file command1 | command2 > output_file
-int	main(int argc, char **argv)
+int	main(int argc, char **argv, char **envp)
 {
 	t_pipex	*data;
 
@@ -96,8 +90,8 @@ int	main(int argc, char **argv)
 	if (!data)
 		return (1);
 	// Execute the commands
-	if (pipex(data) == 1)
-		return (1);
+	if (pipex(data, envp) == 1)
+		ft_printf("Error\n");
 	free(data);
 	return (0);
 }
