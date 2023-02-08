@@ -24,13 +24,17 @@
 # include "../lib/Printf/inc/ft_printf.h"
 /* ************************************************************************** */
 /* ********************************* STRUCTS ******************************** */
-// Structure for the pipex program. It contains the two commands and the two files.
+// Structure for the pipex program. It contains the two commands, the two files, the file descriptors
+// and the process IDs.
 typedef struct s_pipex
 {
-	char	*cmd1;
-	char	*cmd2;
 	char	*infile;
 	char	*outfile;
+	char	*cmd1;
+	char	*cmd2;
+	int		fd[2];
+	pid_t	pid1;
+	pid_t	pid2;
 }	t_pipex;
 
 // // Structure for the process ID. It contains the PID of the first command and the second command.

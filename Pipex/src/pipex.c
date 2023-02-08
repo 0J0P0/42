@@ -12,47 +12,69 @@
 
 #include "../inc/pipex.h"
 
-// Initialize the struct with the data from the arguments.
+
+// Function that creates the struct and initializes it with the data from the arguments.
 t_pipex	*init_pipex(char **argv)
 {
 	t_pipex	*data;
 
-	data = malloc(sizeof(t_pipex));
+	data = (t_pipex *)malloc(sizeof(t_pipex));
 	if (!data)
 		return (NULL);
 	data->infile = argv[1];
-	data->cmd1 = argv[2];
 	data->outfile = argv[4];
+	data->cmd1 = argv[2];
 	data->cmd2 = argv[3];
+	data->pid1 = 0;
+	data->pid2 = 0;
 	return (data);
 }
 
-// Function that executes the commands and redirects the output of the first
-// command to the input of the second command.
+// Function that executes the commands.
 int	pipex(t_pipex *data)
 {
-	int		fd[2];  // File descriptors for the pipe. fd[0] is the read end and fd[1] is the write end.
-	pid_t	pid;  // Process ID.
-
-	if (pipe(fd) == -1)  // Create a pipe
+	// Create the pipe
+	if (pipe(data->fd) == -1)
 		return (1);
-	pid = fork();  // Create a child process
-	if (pid == -1)  // If the fork fails, return 1.
+	// Fork the first command
+	data->pid1 = fork();
+	if (data->pid1 == -1)
 		return (1);
-	if (pid == 0)  // If the process is the child, execute the first command.
+	if (data->pid1 == 0)
 	{
-		close(fd[0]);
-		dup2(fd[1], 1);
-		close(fd[1]);
-		execve(data->cmd1, ft_split(data->cmd1, ' '), NULL);
+		// Close the read end of the pipe
+		close(data->fd[0]);
+		// Redirect the standard output to the write end of the pipe
+		dup2(data->fd[1], STDOUT_FILENO);
+		// Close the write end of the pipe
+		close(data->fd[1]);
+		// Execute the first command
+		if (execve(data->cmd1, ft_split(data->cmd1, ' '), NULL) == -1)
+			return (1);		
 	}
-	else  // If the process is the parent, execute the second command.
+	// Fork the second command
+	data->pid2 = fork();
+	if (data->pid2 == -1)
+		return (1);
+	if (data->pid2 == 0)
 	{
-		close(fd[1]);
-		dup2(fd[0], 0);
-		close(fd[0]);
-		execve(data->cmd2, ft_split(data->cmd2, ' '), NULL);
+		// Close the write end of the pipe
+		close(data->fd[1]);
+		// Redirect the standard input to the read end of the pipe
+		dup2(data->fd[0], STDIN_FILENO);
+		// Close the read end of the pipe
+		close(data->fd[0]);
+		// Execute the second command
+		if (execve(data->cmd2, ft_split(data->cmd2, ' '), NULL) == -1)
+			return (1);
 	}
+	// Close the read and write ends of the pipe
+	close(data->fd[0]);
+	close(data->fd[1]);
+	// Wait for the first command to finish
+	waitpid(data->pid1, NULL, 0);
+	// Wait for the second command to finish
+	waitpid(data->pid2, NULL, 0);
 	return (0);
 }
 
