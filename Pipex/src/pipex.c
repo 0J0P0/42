@@ -12,6 +12,27 @@
 
 #include "../inc/pipex.h"
 
+// Error function that prints the error message and exits the program with the
+// corresponding error code.
+void	ft_error(int err_code, int ex_code)
+{
+	if (err_code == ERR_ARG)
+		ft_printf("Error: Wrong number of arguments.\n");
+	else if (err_code == ERR_MC)
+		ft_printf("Error: Memory allocation failed.\n");
+	else if (err_code == ERR_CNF)
+		ft_printf("Error: Command not found.\n");
+	else if (err_code == ERR_PERM)
+		ft_printf("Error: Permission denied.\n");
+	else if (err_code == ERR_NFD)
+		ft_printf("Error: No such file or directory.\n");
+	else if (err_code == ERR_FD)
+		ft_printf("Error: File descriptor error.\n");
+	else if (err_code == ERR_PERR)
+		perror("Error: ");
+	exit(ex_code);
+}
+
 // Function that creates the struct and initializes it with the data from the arguments.
 t_pipex	*init_pipex(char **argv)
 {
@@ -26,8 +47,15 @@ t_pipex	*init_pipex(char **argv)
 	data->cmd2 = ft_strjoin("/usr/bin/", ft_split(argv[3], ' ')[0]);
 	data->cmd1_arg = argv[2];
 	data->cmd2_arg = argv[3];
-	data->pid1 = 0;
-	data->pid2 = 0;
+
+	// Open files
+	data->in_fd = open(data->infile, O_RDONLY);
+	if (data->in_fd == -1)
+		ft_error(ERR_NFD, 1);
+	data->out_fd = open(data->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (data->out_fd == -1)
+		ft_error(ERR_NFD, 1);
+	
 	return (data);
 }
 
@@ -35,41 +63,37 @@ t_pipex	*init_pipex(char **argv)
 // ./pipex < input_file command1 | command2 > output_file.
 int	pipex(t_pipex *data, char **envp)
 {
-	// Create the pipe
-	if (pipe(data->fd) == -1)
-		return (1);
-	// Fork the first command
-	data->pid1 = fork();
-	if (data->pid1 == -1)
-		return (1);
-	if (data->pid1 == 0)
+	pid_t	pid;
+
+	if (pipe(data->fd) == -1)  // Create a pipe
+		return (ERR_PERR);
+	pid = fork();  // Create a child process
+	if (pid == -1)  // If the fork fails, return 1.
+		return (ERR_PERR);
+	if (pid == 0)  // If the process is the child, execute the first command.
 	{
-		close(data->fd[0]);
-		dup2(data->fd[1], STDOUT_FILENO);
-		close(data->fd[1]);
+		if (close(data->fd[0]) == -1)
+			return (ERR_FD);
+		if (dup2(data->fd[1], 1) == -1)
+			return (ERR_FD);
+		if (close(data->fd[1]) == -1)
+			return (ERR_FD);
 		if (execve(data->cmd1, ft_split(data->cmd1_arg, ' '), envp) == -1)
-			return (1);		
+			return (ERR_PERR);
 	}
-	// Fork the second command
-	data->pid2 = fork();
-	if (data->pid2 == -1)
-		return (1);
-	if (data->pid2 == 0)
+	else  // If the process is the parent, execute the second command.
 	{
-		close(data->fd[1]);
-		dup2(data->fd[0], STDIN_FILENO);
-		close(data->fd[0]);
+		if (close(data->fd[1]) == -1)
+			return (ERR_FD);
+		if (dup2(data->fd[0], 0) == -1)
+			return (ERR_FD);
+		if (close(data->fd[0]) == -1)
+			return (ERR_FD);
 		if (execve(data->cmd2, ft_split(data->cmd2_arg, ' '), envp) == -1)
-			return (1);
+			return (ERR_PERR);
 	}
-	// Close the read and write ends of the pipe
-	close(data->fd[0]);
-	close(data->fd[1]);
-	// Wait for the first command to finish
-	waitpid(data->pid1, NULL, 0);
-	// Wait for the second command to finish
-	waitpid(data->pid2, NULL, 0);
-	return (0);
+	waitpid(pid, &data->status, 0);  // Wait for the child process to finish.
+	return (WEXITSTATUS(data->status));
 }
 
 // Programm that simulates the pipe command in linux. It takes 4 arguments:
@@ -81,17 +105,20 @@ int	pipex(t_pipex *data, char **envp)
 // ./pipex < input_file command1 | command2 > output_file
 int	main(int argc, char **argv, char **envp)
 {
+	int		ERR;
 	t_pipex	*data;
 
 	if (argc != 5)
-		return (1);
+		ft_error(ERR_ARG, 1);
 	// Create a struct to store the data
 	data = init_pipex(argv);
 	if (!data)
-		return (1);
+		ft_error(ERR_MC, 1);
 	// Execute the commands
-	if (pipex(data, envp) == 1)
-		ft_printf("Error\n");
-	free(data);
+	ERR = pipex(data, envp);
+	// Free the memory
+	// ft_free(data);  ///////////////////////////////////////
+	if (!ERR)
+		ft_error(ERR, 1);
 	return (0);
 }
