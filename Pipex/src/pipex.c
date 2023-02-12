@@ -48,6 +48,9 @@ t_pipex	*init_pipex(char **argv)
 	data->cmd1_arg = argv[2];
 	data->cmd2_arg = argv[3];
 
+	// pid variables
+	data->pid1 = 0;
+	data->pid2 = 0;
 	// Open files
 	data->in_fd = open(data->infile, O_RDONLY);
 	if (data->in_fd == -1)
@@ -63,37 +66,54 @@ t_pipex	*init_pipex(char **argv)
 // ./pipex < input_file command1 | command2 > output_file.
 int	pipex(t_pipex *data, char **envp)
 {
-	pid_t	pid;
+	int		fd[2];
+	int		status;
 
-	if (pipe(data->fd) == -1)  // Create a pipe
-		return (ERR_PERR);
-	pid = fork();  // Create a child process
-	if (pid == -1)  // If the fork fails, return 1.
-		return (ERR_PERR);
-	if (pid == 0)  // If the process is the child, execute the first command.
+	// Create the pipe
+	if (pipe(fd) == -1)
+		ft_error(ERR_FD, 1);
+	// Fork the first child
+	data->pid1 = fork();
+	if (data->pid1 == -1)
+		ft_error(ERR_PERR, 1);
+	else if (data->pid1 == 0)
 	{
-		if (close(data->fd[0]) == -1)
-			return (ERR_FD);
-		if (dup2(data->fd[1], 1) == -1)
-			return (ERR_FD);
-		if (close(data->fd[1]) == -1)
-			return (ERR_FD);
+		// Close the read end of the pipe
+		close(fd[0]);
+		// Redirect the output to the write end of the pipe
+		if (dup2(fd[1], STDOUT_FILENO) == -1)
+			ft_error(ERR_FD, 1);
+		// Close the write end of the pipe
+		close(fd[1]);
+		// Execute the first command
 		if (execve(data->cmd1, ft_split(data->cmd1_arg, ' '), envp) == -1)
-			return (ERR_PERR);
+			ft_error(ERR_CNF, 1);
 	}
-	else  // If the process is the parent, execute the second command.
+	// Fork the second child
+	data->pid2 = fork();
+	if (data->pid2 == -1)
+		ft_error(ERR_PERR, 1);
+	else if (data->pid2 == 0)
 	{
-		if (close(data->fd[1]) == -1)
-			return (ERR_FD);
-		if (dup2(data->fd[0], 0) == -1)
-			return (ERR_FD);
-		if (close(data->fd[0]) == -1)
-			return (ERR_FD);
+		// Close the write end of the pipe
+		close(fd[1]);
+		// Redirect the input to the read end of the pipe
+		if (dup2(fd[0], STDIN_FILENO) == -1)
+			ft_error(ERR_FD, 1);
+		// Close the read end of the pipe
+		close(fd[0]);
+		// Execute the second command
 		if (execve(data->cmd2, ft_split(data->cmd2_arg, ' '), envp) == -1)
-			return (ERR_PERR);
+			ft_error(ERR_CNF, 1);
 	}
-	waitpid(pid, &data->status, 0);  // Wait for the child process to finish.
-	return (WEXITSTATUS(data->status));
+	// Close the read and write ends of the pipe
+	close(fd[0]);
+	close(fd[1]);
+	// Wait for the first child to finish
+	waitpid(data->pid1, &status, 0);
+	// Wait for the second child to finish
+	waitpid(data->pid2, &status, 0);
+	return (1);
 }
 
 // Programm that simulates the pipe command in linux. It takes 4 arguments:

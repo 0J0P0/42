@@ -37,17 +37,18 @@
 // the file descriptors and the process IDs.
 typedef struct s_pipex
 {
-	char	*infile;
-	char	*outfile;
-	char	*cmd1_arg;
-	char	*cmd2_arg;
-	char	*cmd1;
-	char	*cmd2;
 	int		fd[2];
 	int		in_fd;
 	int		out_fd;
+	char	*infile;
+	char	*outfile;
+	char	*cmd1;
+	char	*cmd2;
+	char	*cmd1_arg;
+	char	*cmd2_arg;
 	int		status;
-
+	pid_t	pid1;
+	pid_t	pid2;
 }	t_pipex;
 /* ************************************************************************** */
 # endif
