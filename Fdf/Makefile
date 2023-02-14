@@ -21,13 +21,13 @@ CFLAGS				=	 -g -O3 -Wall -Werror -Wextra
 INC		 			=	 inc/
 LIB					=	 lib/
 
-LIBFT_DIR			=	 $(LIB)libft/
+LIBFT_DIR			=	 $(LIB)Libft/
 LIBFT				=	 $(LIBFT_DIR)libft.a
 
 PRINTF_DIR			=	 $(LIB)Printf/
 PRINTF				=	 $(PRINTF_DIR)libftprintf.a
 
-MINILIBX_DIR		=	 $(LIB)minilibx/minilibx_macos/
+MINILIBX_DIR		=	 $(LIB)Mlx/minilibx_macos/
 MINILIBX			=	 $(MINILIBX_DIR)libmlx.a
 MINILIBXCC			=	 -I mlx -L $(MINILIBX_DIR) -lmlx
 
