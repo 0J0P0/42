@@ -33,12 +33,12 @@ OBJ = ${SRC:%.c=%.o}
 OBJ_B = ${SRC_B:%.c=%.o}
 
 %.o : %.c ${HEADER} Makefile
-	@printf "${PINK}\rCompiling: ${YELLOW}$<...${DEF_COLOR}				\r"
 	@gcc ${FLAGS} -c $< -o $@
+	@printf "${PINK}\rCompiling: ${YELLOW}$<...${DEF_COLOR}				\r"
 
 ${NAME}: ${OBJ}
 	@ar crs ${NAME} ${OBJ}
-	@echo "$(GREEN)libft library has been created!$(DEF_COLOR)"
+	@echo "$(GREEN)$(NAME) created$(DEF_COLOR)"
 
 all: ${NAME}
 
@@ -47,17 +47,16 @@ bonus: ${BNAME}
 ${BNAME}: ${OBJ} ${OBJ_B}
 	@ar crs ${NAME} ${OBJ} ${OBJ_B}
 	@touch $@
-	@echo "$(GREEN)libft library has been created!$(DEF_COLOR)"
+	@echo "$(GREEN)$(NAME) created$(DEF_COLOR)"
 
 clean:
 	@rm -f ${OBJ} ${OBJ_B}
-	@echo "$(RED)libft objects deleted$(DEF_COLOR)"
+	@echo "$(RED)Libft objects deleted$(DEF_COLOR)"
 
 fclean: clean
 	@rm -f ${NAME} ${BNAME}
-	@echo "$(RED)libft deleted$(DEF_COLOR)"
+	@echo "$(RED)Libft deleted$(DEF_COLOR)"
 
 re: fclean all
-	@echo "$(YELLOW)libft recompiled$(DEF_COLOR)"
 
 .PHONY: all bonus clean fclean re

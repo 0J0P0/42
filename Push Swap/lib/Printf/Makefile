@@ -44,23 +44,22 @@ FLAGS = -Wall -Werror -Wextra
 ${OBJ_DIR}%.o : ${SRC_DIR}%.c
 	@mkdir -p $(dir $@)
 	@gcc ${FLAGS} -I./ -c $< -o $@
-	@echo "$(PINK)Compiling $<$(DEF_COLOR)"
+	@printf "${PINK}\rCompiling: ${YELLOW}$<...${DEF_COLOR}				\r"
 
 all: ${NAME}
 
 ${NAME}: ${OBJ} ${INCLUDE}${HEADER}
 	@ar crs ${NAME} ${OBJ}
-	@echo "$(GREEN)ft_printf library has been created!$(DEF_COLOR)"
+	@echo "$(GREEN)$(NAME) created$(DEF_COLOR)"
 
 clean:
 	@rm -rf ${OBJ_DIR}
-	@echo "$(RED)ft_printf object files cleaned!$(DEF_COLOR)"
+	@echo "$(RED)Printf objects deleted$(DEF_COLOR)"
 
 fclean: clean
 	@rm -rf ${NAME}
-	@echo "$(RED)ft_printf library executable files cleaned!$(DEF_COLOR)"
+	@echo "$(RED)Printf deleted$(DEF_COLOR)"
 
 re: fclean all
-	@echo "$(YELLOW)Cleaned and rebuilt everything for ft_printf!$(DEF_COLOR)"
 
 .PHONY: all ${NAME} clean fclean re

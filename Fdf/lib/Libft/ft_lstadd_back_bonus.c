@@ -1,40 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_lstadd_back_bonus.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jzaldiva <jzaldiva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/14 14:29:28 by jzaldiva          #+#    #+#             */
-/*   Updated: 2023/02/14 14:29:28 by jzaldiva         ###   ########.fr       */
+/*   Created: 2022/09/30 16:21:07 by jzaldiva          #+#    #+#             */
+/*   Updated: 2022/09/30 16:21:07 by jzaldiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_atoi(const char *nptr)
+void	ft_lstadd_back(t_list **lst, t_list *new)
 {
-	int	i;
-	int	n;
-	int	sign;
+	t_list	*new_lst;
 
-	i = 0;
-	sign = 1;
-	while (nptr[i] == ' ' || nptr[i] == '\f' || nptr[i] == '\n'
-		|| nptr[i] == '\r' || nptr[i] == '\t' || nptr[i] == '\v')
-		++i;
-	if (nptr[i] == '+')
-		++i;
-	else if (nptr[i] == '-')
+	if (new)
 	{
-		sign = -1;
-		++i;
+		if (!*lst)
+		{
+			*lst = new;
+			return ;
+		}
+		new_lst = ft_lstlast(*lst);
+		new_lst->next = new;
 	}
-	n = 0;
-	while (nptr[i] && ft_isdigit(nptr[i]))
-	{
-		n = 10 * n + (nptr[i] - '0');
-		++i;
-	}
-	return (sign * n);
 }

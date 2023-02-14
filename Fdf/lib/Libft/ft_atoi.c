@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jzaldiva <jzaldiva@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jzaldiva <jzaldiva@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/14 14:29:28 by jzaldiva          #+#    #+#             */
-/*   Updated: 2023/02/14 14:29:28 by jzaldiva         ###   ########.fr       */
+/*   Created: 2022/09/16 16:19:09 by jzaldiva          #+#    #+#             */
+/*   Updated: 2022/09/16 16:26:59 by jzaldiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,3 +38,6 @@ int	ft_atoi(const char *nptr)
 	}
 	return (sign * n);
 }
+
+
+

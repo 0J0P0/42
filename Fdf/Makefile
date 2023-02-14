@@ -64,20 +64,19 @@ makelibs:
 
 -include 	${DEPS}
 $(NAME): $(OBJ)		
-	@$(CC) $(CFLAGS) $(OBJ) $(PRINTF) $(MINILIBXCC) $(OPENGL) -o $(NAME)		
-	@echo "👉 $(BLUE)$(CC) $(CFLAGS) $(OBJ) $(PRINTF) $(MINILIBXCC) $(OPENGL) -o $(NAME)$(DEF_COLOR)"
-	@echo "$(GREEN)✨ FDF compiled!$(DEF_COLOR)"
+	@$(CC) $(CFLAGS) $(OBJ) $(PRINTF) $(MINILIBXCC) $(OPENGL) -o $(NAME)
+	@echo "$(GREEN)$(NAME) created$(DEF_COLOR)" 
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INCS) | $(OBJF)
-	@echo "🍩 $(YELLOW)Compiling: $< $(DEF_COLOR)"
 	$(CC) $(CFLAGS) -MMD -c $< -o $@
+	@printf "${CYAN}\rCompiling: ${YELLOW}$<...${DEF_COLOR}				\r"
 
 $(OBJF):
 	@mkdir -p $(OBJ_DIR)
 
 $(PRINTF):
 	@make -C $(PRINTF_DIR)
-	@echo "$(GREEN)ft_printf compiled!$(DEF_COLOR)"	
+	@echo "$(GREEN)Printf compiled!$(DEF_COLOR)"	
 
 $(MINILIBX):
 	@make -C $(MINILIBX_DIR)
@@ -85,22 +84,16 @@ $(MINILIBX):
 
 clean:
 	@make clean -sC $(PRINTF_DIR)
-	@echo "$(CYAN)ft_printf object and dependency files cleaned.$(DEF_COLOR)"
 	@make clean -C $(MINILIBX_DIR)
-	@echo "$(CYAN)Minilibx object files cleaned.$(DEF_COLOR)"	
 	$(RM) -rf $(OBJ_DIR)
-	@echo "$(CYAN)Fdf object files cleaned!$(DEF_COLOR)"
+	@echo "$(RED)object files cleaned!$(DEF_COLOR)"
 
 fclean:	clean
 	$(RM) -f $(NAME)
-	@echo "$(CYAN)Fdf executable files cleaned!$(DEF_COLOR)"
 	$(RM) -f $(MINILIBX_DIR)libmlx.a
-	@echo "$(CYAN)libmlx.a lib cleaned!$(DEF_COLOR)"			
 	$(RM) -f $(LIBFT_DIR)libft.a
-	@echo "$(CYAN)libft.a lib cleaned!$(DEF_COLOR)"
+	@echo "$(RED)$(NAME) deleted$(DEF_COLOR)"
 
-re: fclean 
-		@$(MAKE)	
-		@echo "$(GREEN)Cleaned and rebuilt everything for Fdf!$(DEF_COLOR)"
+re: fclean all	
 
 .PHONY:		all clean fclean re
