@@ -55,7 +55,6 @@ typedef struct	s_mlx
 {
     void		*mlx;
     void		*win;
-    t_map		*map;
 }				t_mlx;
 
 /* ******************************** PROTOTYPES ******************************** */

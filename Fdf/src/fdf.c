@@ -39,11 +39,8 @@ int	main(int argc, char* argv[])
 	// Check if the file is valid.
 	if (!ft_check_file(argv[1]))
 		ft_error(ERR_INV, 1);
+	
 
-	// Open the file.
-	map = ft_read_map(argv[1]);
-	if (!map.points)
-		ft_error(ERR_MC, 1);
 
 	// Initialize mlx.
 	mlx.mlx = mlx_init();
@@ -52,7 +49,10 @@ int	main(int argc, char* argv[])
 	mlx.win = mlx_new_window(mlx.mlx, 1000, 1000, "Fdf");
 	if (!mlx.win)
 		ft_error(ERR_MLX, 1);
-	mlx.map = &map;
+ 	// Open the file.
+	map = ft_read_map(argv[1]);
+	if (!map.points)
+		ft_error(ERR_MC, 1);
 
 	// Draw a line splitting the map in two.
 	// ft_draw_line(&mlx, ft_new_point(0, 500, 0), ft_new_point(1000, 500, 0));
