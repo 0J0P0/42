@@ -6,7 +6,7 @@
 /*   By: jzaldiva <jzaldiva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 15:34:25 by jzaldiva          #+#    #+#             */
-/*   Updated: 2023/02/16 16:07:02 by jzaldiva         ###   ########.fr       */
+/*   Updated: 2023/02/16 18:05:43 by jzaldiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	ft_error(int err_code, int ex_code)
 }
 
 // Function to count the number of coordinates in a line.
-int		ft_count_words(char *str, char c)
+int		ft_count_coord(char *str, char c)
 {
 	int		i;
 	int		count;
@@ -56,20 +56,19 @@ int		ft_count_words(char *str, char c)
 	return (count);
 }
 
-// Function to check if the line is valid. It can only contain numbers and spaces.
+// Function to check if the line is valid. It can only contain numbers and
+// spaces.
 int		ft_check_line(char *line)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	while (line[i])
 	{
 		if (line[i] != ' ' && line[i] != '\n')
-		{
 			// If the character is not a number, return 0.
 			if (line[i] < '0' || line[i] > '9')
 				return (0);
-		}
 		i++;
 	}
 	return (1);
@@ -89,14 +88,13 @@ int		ft_check_file(char *file)
 		return (0);
 	// Read the first line of the file.
 	line = get_next_line(fd);
-
 	if (!line)
 		return (0);
 	// Check if the line is valid.
 	if (!ft_check_line(line))
 		return (0);
 	// Count number of coordinates in the line.
-	count = ft_count_words(line, ' ');
+	count = ft_count_coord(line, ' ');
 	// Free the line.
 	free(line);
 	// Read the rest of the file.
@@ -108,13 +106,14 @@ int		ft_check_file(char *file)
 			return (0);
 		// Check if the number of coordinates in the line is the same as the
 		// first line.
-		if (ft_count_words(line, ' ') != count)
+		if (ft_count_coord(line, ' ') != count)
 			return (0);
 		// Free the line.
 		free(line);
 		// Read the next line.
 		line = get_next_line(fd);
 	}
+	free(line);
 	// Close the file.
 	fd = close(fd);
 	// Check if the file can be closed.

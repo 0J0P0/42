@@ -6,7 +6,7 @@
 /*   By: jzaldiva <jzaldiva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 15:37:41 by jzaldiva          #+#    #+#             */
-/*   Updated: 2023/02/16 16:13:23 by jzaldiva         ###   ########.fr       */
+/*   Updated: 2023/02/16 18:05:38 by jzaldiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ t_map	ft_free_map(t_map map)
 	while (i < map.height)
 	{
 		free(map.points[i]);
+		map.points[i] = NULL;
 		i++;
 	}
 	free(map.points);
@@ -48,6 +49,7 @@ int	ft_count_points(char *line, char c)
 	return (count);
 }
 
+
 // Fucntion to read the .fdf file.
 // Each digit is a point in the map. The points are separated by spaces.
 // The function returns a map structure.
@@ -56,6 +58,7 @@ t_map	ft_read_map(char *file)
 	int		i;
 	int		j;
 	int		fd;
+	int 	tmp;
 	t_map	map;
 	char	*line;
 
@@ -79,6 +82,7 @@ t_map	ft_read_map(char *file)
 		free(line);
 		line = get_next_line(fd);		
 	}
+	free(line);
 	// Allocate memory for the map.
 	map.points = (t_point **)malloc(sizeof(t_point *) * map.height);
 	if (!map.points)
@@ -102,6 +106,8 @@ t_map	ft_read_map(char *file)
 	i = 0;
 
 	// Read the file again.
+	map.max_z = 0;
+	map.min_z = 0;
 	line = get_next_line(fd);
 	while (line)
 	{
@@ -109,11 +115,16 @@ t_map	ft_read_map(char *file)
 		while (j < map.width)
 		{
 			// Get the x coordinate.
-			map.points[i][j].x = j;
+			map.points[i][j].x = i;
 			// Get the y coordinate.
-			map.points[i][j].y = i;
+			map.points[i][j].y = j;
 			// Get the z coordinate.
-			map.points[i][j].z = ft_atoi(line);
+			tmp = ft_atoi(line);
+			if (tmp > map.max_z)
+				map.max_z = tmp;
+			if (tmp < map.min_z)
+				map.min_z = tmp;
+			map.points[i][j].z = tmp;
 			// Get the color.
 			map.points[i][j].color = 0xFFFFFF;
 			// Move to the next point.
@@ -124,6 +135,7 @@ t_map	ft_read_map(char *file)
 		i++;
 		line = get_next_line(fd);
 	}
+	free(line);
 	// Close the file.
 	fd = close(fd);
 	if (fd == -1)

@@ -59,8 +59,9 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	@make -C $(LIBFT_DIR)
 	@make -C $(PRINTF_DIR)
-	@make -C $(MINILIBX_DIR)
-	@gcc $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(PRINTF) $(MINILIBXCC) $(OPENGL)
+#	@make -C $(MINILIBX_DIR)
+#	@gcc $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(PRINTF) $(MINILIBXCC) $(OPENGL)
+	@gcc $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(PRINTF)
 	@echo "$(GREEN)$(NAME) created$(DEF_COLOR)"
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
@@ -71,7 +72,7 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 clean:
 	@make -C $(LIBFT_DIR) clean
 	@make -C $(PRINTF_DIR) clean
-	@make -C $(MINILIBX_DIR) clean
+#	@make -C $(MINILIBX_DIR) clean
 	@rm -rf $(OBJ_DIR)
 	@echo "$(RED)$(NAME) objects deleted$(DEF_COLOR)"
 
