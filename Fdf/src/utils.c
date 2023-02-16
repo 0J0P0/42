@@ -6,7 +6,7 @@
 /*   By: jzaldiva <jzaldiva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 15:34:25 by jzaldiva          #+#    #+#             */
-/*   Updated: 2023/02/16 15:27:51 by jzaldiva         ###   ########.fr       */
+/*   Updated: 2023/02/16 16:07:02 by jzaldiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,20 +56,23 @@ int		ft_count_words(char *str, char c)
 	return (count);
 }
 
-// Function to check if the line is valid.
+// Function to check if the line is valid. It can only contain numbers and spaces.
 int		ft_check_line(char *line)
 {
-    int	i;
+	int		i;
 
-    i = 0;
-    while (line[i])
-    {
-        // If the character is not a space or a digit, the line is invalid.
-        if (line[i] != ' ' && !ft_isdigit(line[i]))
-            return (0);
-        i++;
-    }
-    return (1);
+	i = 0;
+	while (line[i])
+	{
+		if (line[i] != ' ' && line[i] != '\n')
+		{
+			// If the character is not a number, return 0.
+			if (line[i] < '0' || line[i] > '9')
+				return (0);
+		}
+		i++;
+	}
+	return (1);
 }
 
 // Function to check if the file is valid.

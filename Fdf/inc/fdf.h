@@ -68,8 +68,12 @@ int		ft_check_line(char *line);
 
 t_map	ft_free_map(t_map map);
 
-
+t_map	ft_read_map(char *file);
 
 char	*get_next_line(int fd);
+
+
+/* ******************************** DRAW ******************************** */
+void	ft_draw_line(t_mlx *mlx, t_point p1, t_point p2);
 
 # endif
