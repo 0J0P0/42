@@ -32,11 +32,11 @@ int	main(int argc, char *argv[])
 	// Sort the stack a, using stack b. Pass the stacks as references.
 	ft_sort_stack(stack_a, stack_b);
 
-	// Print the stacks.
-	ft_print_stack(stack_a);
-	ft_print_stack(stack_b);
+	// // Print the stacks.
+	// ft_print_stack(stack_a);
+	// ft_print_stack(stack_b);
 	// Free the stacks.
 	ft_free_stack(stack_a);
 	ft_free_stack(stack_b);
 	return (0);
-	}
+}

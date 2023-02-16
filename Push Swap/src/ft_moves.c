@@ -30,23 +30,28 @@ void	ft_sx(t_stack *stack)
 	t_node	*node;
 
 	// If the stack is empty or has only one element, do nothing.
-	if (stack->size < 2)
+	if (stack->size == 0 || stack->size == 1)
 		return ;
 	// If the stack has two elements, swap them.
 	if (stack->size == 2)
 	{
 		node = stack->top;
-		stack->top = stack->bottom;
+		stack->top = stack->top->next;
+		stack->top->next = node;
+		stack->top->prev = NULL;
 		stack->bottom = node;
-		stack->top->next = NULL;
-		stack->bottom->next = stack->top;
+		stack->bottom->next = NULL;
+		stack->bottom->prev = stack->top;
 	}
 	// If the stack has more than two elements, swap the top two elements.
 	else
 	{
 		node = stack->top;
 		stack->top = stack->top->next;
+		stack->top->next->prev = node;
+		stack->top->prev = NULL;
 		node->next = stack->top->next;
+		node->prev = stack->top;
 		stack->top->next = node;
 	}
 	ft_print_move("s", stack->id);

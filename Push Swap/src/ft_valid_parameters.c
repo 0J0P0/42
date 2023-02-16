@@ -16,7 +16,7 @@
 void		ft_error(void)
 {
 	ft_printf("Error\n");
-	exit(0);
+	exit(1);
 }
 
 // If there are not numbers, end the program.
