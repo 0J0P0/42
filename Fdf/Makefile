@@ -15,10 +15,9 @@ NAME				=	 fdf
 
 SRC_DIR				=	 src/
 OBJ_DIR				=	 obj/
-CC					=	 gcc
-CFLAGS				=	 -g -O2 -Wall -Werror -Wextra
+CFLAGS				=	 -Wall -Werror -Wextra
 
-INC		 			=	 inc/
+INCLUDE		 		=	 inc/
 LIB					=	 lib/
 
 LIBFT_DIR			=	 $(LIB)Libft/
@@ -35,14 +34,14 @@ HEADER 				=	 -I$(INC) -I$(LIBFT_DIR) -I$(MINILIBX_DIR)
 OPENGL				=	 -framework OpenGL -framework AppKit
 # **************************************************************************** #
 # *********************************SOURCES************************************ #
-SRC_FILES	=	fdf
+SRC_FILES	=	fdf utils map get_next_line
 
 SRC 		= 	$(addprefix $(SRC_DIR), $(addsuffix .c, $(SRC_FILES)))
 OBJ 		= 	$(addprefix $(OBJ_DIR), $(addsuffix .o, $(SRC_FILES)))
-DEPS 		= 	$(addprefix $(OBJ_DIR), $(addsuffix .d, $(SRC_FILES)))
+# DEPS 		= 	$(addprefix $(OBJ_DIR), $(addsuffix .d, $(SRC_FILES)))
 INCS		= 	$(addprefix $(INCLUDE), $(addsuffix .h, $(INC_FILES)))
 
-OBJF		=	.cache_exists
+# OBJF		=	.cache_exists
 # **************************************************************************** #
 # *********************************COLORS************************************* #
 DEF_COLOR	=	\033[0;39m
@@ -55,40 +54,33 @@ MAGENTA		=	\033[0;95m
 CYAN		=	\033[0;96m
 WHITE		=	\033[0;97m
 # **********************************RULES************************************* #
-all: $(PRINTF) $(MINILIBX) $(NAME)
+all: $(NAME)
 
--include 	${DEPS}
 $(NAME): $(OBJ)
-	@$(CC) $(CFLAGS) $(OBJ) $(PRINTF) $(MINILIBXCC) $(OPENGL) -o $(NAME)
-	@echo "$(GREEN)$(NAME) created$(DEF_COLOR)" 
-
-$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INCS) | $(OBJF)
-	$(CC) $(CFLAGS) -MMD -c $< -o $@
-	@printf "${CYAN}\rCompiling: ${YELLOW}$<...${DEF_COLOR}				\r"
-
-$(OBJF):
-	@mkdir -p $(OBJ_DIR)
-
-$(PRINTF):
+	@make -C $(LIBFT_DIR)
 	@make -C $(PRINTF_DIR)
-	@echo "$(GREEN)Printf compiled!$(DEF_COLOR)"	
-
-$(MINILIBX):
 	@make -C $(MINILIBX_DIR)
-	@echo "$(GREEN)Minilibx compiled!$(DEF_COLOR)"			
+	@gcc $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(PRINTF) $(MINILIBXCC) $(OPENGL)
+	@echo "$(GREEN)$(NAME) created$(DEF_COLOR)"
+
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c
+	@mkdir -p $(OBJ_DIR)
+	@gcc $(CFLAGS) $(HEADER) -o $@ -c $<
+	@echo "$(CYAN)Compiling $<$(DEF_COLOR)"
 
 clean:
-	@make clean -sC $(PRINTF_DIR)
-	@make clean -C $(MINILIBX_DIR)
-	$(RM) -rf $(OBJ_DIR)
-	@echo "$(RED)object files cleaned!$(DEF_COLOR)"
+	@make -C $(LIBFT_DIR) clean
+	@make -C $(PRINTF_DIR) clean
+	@make -C $(MINILIBX_DIR) clean
+	@rm -rf $(OBJ_DIR)
+	@echo "$(RED)$(NAME) objects deleted$(DEF_COLOR)"
 
-fclean:	clean
-	$(RM) -f $(NAME)
-	$(RM) -f $(MINILIBX_DIR)libmlx.a
-	$(RM) -f $(LIBFT_DIR)libft.a
+fclean: clean
+	@make -C $(LIBFT_DIR) fclean
+	@make -C $(PRINTF_DIR) fclean
+	@rm -f $(NAME)
 	@echo "$(RED)$(NAME) deleted$(DEF_COLOR)"
 
-re: fclean all	
+re: fclean all
 
-.PHONY:		all clean fclean re
+.PHONY: all clean fclean re

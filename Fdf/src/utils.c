@@ -6,7 +6,7 @@
 /*   By: jzaldiva <jzaldiva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 15:34:25 by jzaldiva          #+#    #+#             */
-/*   Updated: 2023/02/14 15:56:27 by jzaldiva         ###   ########.fr       */
+/*   Updated: 2023/02/16 15:27:51 by jzaldiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,46 +37,23 @@ void	ft_error(int err_code, int ex_code)
 	exit(ex_code);
 }
 
-// Function to count the number of points in a line. Each point is separated by
-// a space.
-int		ft_count_points(char *line, char c)
+// Function to count the number of coordinates in a line.
+int		ft_count_words(char *str, char c)
 {
-	int	i;
-	int	count;
+	int		i;
+	int		count;
 
 	i = 0;
 	count = 0;
-	while (line[i])
+	while (str[i])
 	{
-		if (line[i] != c)  // If the character is not a space, it is a point.
+		// If the character is not a space and the next character is a space or
+		// the end of the string, increase the count.
+		if (str[i] != c && (str[i + 1] == c || str[i + 1] == '\0'))
 			count++;
-		while (line[i] && line[i] != c)  // Skip the characters that are not spaces.
-			i++;
-		if (line[i])  // If the character is a space, skip it.
-			i++;
+		i++;
 	}
 	return (count);
-}
-
-// Function to count the number of words in a line. Each word is separated by
-// a space.
-int		ft_count_words(char *line, char c)
-{
-    int	i;
-    int	count;
-
-    i = 0;
-    count = 0;
-    while (line[i])
-    {
-        while (line[i] && line[i] == c)  // Skip the spaces.
-            i++;
-        if (line[i])  // If the character is not a space, it is a word.
-            count++;
-        while (line[i] && line[i] != c)  // Skip the characters that are not spaces.
-            i++;
-    }
-    return (count);
 }
 
 // Function to check if the line is valid.
@@ -88,7 +65,7 @@ int		ft_check_line(char *line)
     while (line[i])
     {
         // If the character is not a space or a digit, the line is invalid.
-        if (line[i] != ' ' && (line[i] < '0' || line[i] > '9'))
+        if (line[i] != ' ' && !ft_isdigit(line[i]))
             return (0);
         i++;
     }
@@ -99,6 +76,7 @@ int		ft_check_line(char *line)
 int		ft_check_file(char *file)
 {
 	int		fd;
+	int		count;
 	char	*line;
 
 	// Open the file.
@@ -107,23 +85,37 @@ int		ft_check_file(char *file)
 	if (fd == -1)
 		return (0);
 	// Read the first line of the file.
-	get_next_line(fd, &line);
-	// Check if the first line is valid.
-	if (ft_check_line(line) == 0)
+	line = get_next_line(fd);
+
+	if (!line)
 		return (0);
+	// Check if the line is valid.
+	if (!ft_check_line(line))
+		return (0);
+	// Count number of coordinates in the line.
+	count = ft_count_words(line, ' ');
+	// Free the line.
+	free(line);
 	// Read the rest of the file.
-	while (get_next_line(fd, &line) > 0)
+	line = get_next_line(fd);
+	while (line)
 	{
 		// Check if the line is valid.
-		if (ft_check_line(line) == 0)
+		if (!ft_check_line(line))
 			return (0);
-		// Check if the line has the same number of coordinates as the first line.
-		if (ft_count_words(line, ' ') != ft_count_words(line, ' '))
+		// Check if the number of coordinates in the line is the same as the
+		// first line.
+		if (ft_count_words(line, ' ') != count)
 			return (0);
+		// Free the line.
+		free(line);
+		// Read the next line.
+		line = get_next_line(fd);
 	}
 	// Close the file.
 	fd = close(fd);
-    if (fd == -1)
-        return (0);
+	// Check if the file can be closed.
+	if (fd == -1)
+		return (0);
 	return (1);
 }

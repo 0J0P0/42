@@ -1,16 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jzaldiva <jzaldiva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 09:51:28 by jzaldiva          #+#    #+#             */
-/*   Updated: 2023/01/29 21:12:35 by jzaldiva         ###   ########.fr       */
+/*   Updated: 2023/02/16 15:21:51 by jzaldiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line_bonus.h"
+# include "../inc/fdf.h"
+
+#  define BUFFER_SIZE (int)1
 
 void    *ft_free(char **str)
 {

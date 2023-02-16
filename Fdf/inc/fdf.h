@@ -61,16 +61,15 @@ typedef struct	s_mlx
 /* ******************************** PROTOTYPES ******************************** */
 void	ft_error(int err_code, int ex_code);
 
-int		ft_count_points(char *line, char c);
-
-int		ft_count_words(char *line, char c);
-
-int		ft_check_line(char *line);
-
 int		ft_check_file(char *file);
 
-t_map	read_map(char *file);
+int		ft_check_line(char *line);
+/* ******************************** MAP ******************************** */
 
 t_map	ft_free_map(t_map map);
+
+
+
+char	*get_next_line(int fd);
 
 # endif
