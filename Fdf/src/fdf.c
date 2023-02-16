@@ -28,12 +28,13 @@ int	main(int argc, char* argv[])
 		ft_error(ERR_INV, 1);
 	
 	// ////////////////////////////////////////////////////////////////////
-	// void	*mlx;
-	// // Initialize connection to the graphic system.
-	// mlx = mlx_init();
-	// // Create a new window.
-	// mlx_new_window(mlx, 1920, 1080, "Fdf");
-	// mlx_loop(mlx);
+	void	*mlx;
+	void	*win;
+	// Initialize connection to the graphic system.
+	mlx = mlx_init();
+	// Create a new window.
+	win = mlx_new_window(mlx, 1920, 1080, "Fdf");
+	mlx_loop(mlx);
 	// ////////////////////////////////////////////////////////////////////
 	// // Read the file.
 	// map = read_map(argv[1]);
