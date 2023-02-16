@@ -34,7 +34,7 @@ HEADER 				=	 -I$(INC) -I$(LIBFT_DIR) -I$(MINILIBX_DIR)
 OPENGL				=	 -framework OpenGL -framework AppKit
 # **************************************************************************** #
 # *********************************SOURCES************************************ #
-SRC_FILES	=	fdf utils map get_next_line line
+SRC_FILES	=	fdf ft_utils ft_map get_next_line ft_line ft_mlx ft_point
 
 SRC 		= 	$(addprefix $(SRC_DIR), $(addsuffix .c, $(SRC_FILES)))
 OBJ 		= 	$(addprefix $(OBJ_DIR), $(addsuffix .o, $(SRC_FILES)))

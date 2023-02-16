@@ -46,13 +46,7 @@ int	main(int argc, char* argv[])
 		ft_error(ERR_MC, 1);
 
 	// Initialize mlx.
-	// mlx.mlx = mlx_init();
-	// if (!mlx.mlx)
-	// 	ft_error(ERR_MLX, 1);
-	// mlx.win = mlx_new_window(mlx.mlx, 1000, 1000, "Fdf");
-	// if (!mlx.win)
-	// 	ft_error(ERR_MLX, 1);
- 	
+	// mlx = ft_mlx_init();
 
 	// Draw a line splitting the map in two.
 	// ft_draw_line(&mlx, ft_new_point(0, 500, 0), ft_new_point(1000, 500, 0));
@@ -67,9 +61,7 @@ int	main(int argc, char* argv[])
 	for (int i = 0; i < map.height; i++)
 	{
 		for (int j = 0; j < map.width; j++)
-		{
-			ft_printf("(%d) ", map.points[i][j].z);
-		}
+			ft_printf("(%d) and color: %d\n", map.points[i][j].z, map.points[i][j].color);
 		ft_printf("\n");
 	}
 	ft_printf("----------------------------------\n");

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   map.c                                              :+:      :+:    :+:   */
+/*   ft_map.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jzaldiva <jzaldiva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 15:37:41 by jzaldiva          #+#    #+#             */
-/*   Updated: 2023/02/16 18:05:38 by jzaldiva         ###   ########.fr       */
+/*   Updated: 2023/02/16 20:23:01 by jzaldiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,32 @@ int	ft_count_points(char *line, char c)
 }
 
 
+// Function to color the all the points in the map.
+// The color is based on the height of the point. The closer to the max z, the
+// closer to the max color. The closer to the min z, the closer to the min color.
+void	ft_color_map(t_map *map)
+{
+	int		i;
+	int		j;
+	int		color;
+	double	percent;
+
+	i = 0;
+	while (i < map->height)
+	{
+		j = 0;
+		while (j < map->width)
+		{
+			percent = (double)(map->points[i][j].z - map->min_z) / (double)(map->max_z - map->min_z);
+			color = (int)((1 - percent) * map->min_color + percent * map->max_color);
+			map->points[i][j].color = color;
+			j++;
+		}
+		i++;
+	}
+}
+
+
 // Fucntion to read the .fdf file.
 // Each digit is a point in the map. The points are separated by spaces.
 // The function returns a map structure.
@@ -58,7 +84,7 @@ t_map	ft_read_map(char *file)
 	int		i;
 	int		j;
 	int		fd;
-	int 	tmp;
+	int		tmp;
 	t_map	map;
 	char	*line;
 
@@ -70,6 +96,9 @@ t_map	ft_read_map(char *file)
 	line = get_next_line(fd);
 	if (!line)
 		ft_error(ERR_NFD, 1);
+	// Assign color to the min and max z.
+	map.min_color = MIN_COLOR;
+	map.max_color = MAX_COLOR;
 	// Get the width of the map.
 	map.width = ft_count_points(line, ' ');
 	// Get the height of the map.
@@ -140,5 +169,30 @@ t_map	ft_read_map(char *file)
 	fd = close(fd);
 	if (fd == -1)
 		return (ft_free_map(map));
+
+	ft_color_map(&map);
 	return (map);
 }
+
+
+// // Function to draw the map.
+// void	ft_draw_map(t_map map, t_mlx *mlx)
+// {
+// 	int	i;
+// 	int	j;
+
+// 	i = 0;
+// 	while (i < map.height)
+// 	{
+// 		j = 0;
+// 		while (j < map.width)
+// 		{
+// 			if (j < map.width - 1)
+// 				ft_draw_line(map.points[i][j], map.points[i][j + 1], mlx);
+// 			if (i < map.height - 1)
+// 				ft_draw_line(map.points[i][j], map.points[i + 1][j], mlx);
+// 			j++;
+// 		}
+// 		i++;
+// 	}
+// }

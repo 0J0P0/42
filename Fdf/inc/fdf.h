@@ -33,28 +33,43 @@
 # define ERR_PERR	(int)7
 # define ERR_INV	(int)8
 # define ERR_MLX	(int)9
+
+// Define the width and height of the window.
+# define WIN_WIDTH	(int)1920
+# define WIN_HEIGHT	(int)1080
+
+// Define the color of the min and max points in the map.
+# define MIN_COLOR	(int)0xFFFFFF
+# define MAX_COLOR	(int)0xFF0000
 /* ******************************** STRUCTURES ******************************** */
 typedef struct	s_point
 {
-    int			x;
-    int			y;
-    int			z;
-    int			color;
+	int			x;
+	int			y;
+	int			z;
+	int			color;
 }				t_point;
 
+// Struct of a map, containing the matrix of points, the width and height of the map, and the min and max points in terms of z with its color.
 typedef struct	s_map
 {
-    t_point		**points;
-    int			width;
-    int			height;
-    int         max_z;
-    int         min_z;
+	t_point		**points;
+	int			width;
+	int			height;
+	int			min_z;
+	int			max_z;
+	int			min_color;
+	int			max_color;
 }				t_map;
 
 typedef struct	s_mlx
 {
-    void		*mlx;
-    void		*win;
+	void		*mlx;
+	void		*win;
+	int			proj;
+	int			scale;
+	int			x_offset;
+	int			y_offset;
 }				t_mlx;
 
 /* ******************************** PROTOTYPES ******************************** */
