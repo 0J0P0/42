@@ -16,7 +16,7 @@ NAME				=	 fdf
 SRC_DIR				=	 src/
 OBJ_DIR				=	 obj/
 CC					=	 gcc
-CFLAGS				=	 -g -O3 -Wall -Werror -Wextra
+CFLAGS				=	 -g -O2 -Wall -Werror -Wextra
 
 INC		 			=	 inc/
 LIB					=	 lib/
@@ -33,14 +33,14 @@ MINILIBXCC			=	 -I mlx -L $(MINILIBX_DIR) -lmlx
 
 HEADER 				=	 -I$(INC) -I$(LIBFT_DIR) -I$(MINILIBX_DIR)
 OPENGL				=	 -framework OpenGL -framework AppKit
-
-SRC_FILES	=	main
+# **************************************************************************** #
+# *********************************SOURCES************************************ #
+SRC_FILES	=	fdf
 
 SRC 		= 	$(addprefix $(SRC_DIR), $(addsuffix .c, $(SRC_FILES)))
 OBJ 		= 	$(addprefix $(OBJ_DIR), $(addsuffix .o, $(SRC_FILES)))
 DEPS 		= 	$(addprefix $(OBJ_DIR), $(addsuffix .d, $(SRC_FILES)))
 INCS		= 	$(addprefix $(INCLUDE), $(addsuffix .h, $(INC_FILES)))
-###
 
 OBJF		=	.cache_exists
 # **************************************************************************** #
@@ -55,15 +55,10 @@ MAGENTA		=	\033[0;95m
 CYAN		=	\033[0;96m
 WHITE		=	\033[0;97m
 # **********************************RULES************************************* #
-all: makelibs
-	@$(MAKE) $(NAME)
-
-makelibs:	
-	@$(MAKE) -C $(PRINTF_DIR)
-	@$(MAKE) -C $(MINILIBX_DIR)
+all: $(PRINTF) $(MINILIBX) $(NAME)
 
 -include 	${DEPS}
-$(NAME): $(OBJ)		
+$(NAME): $(OBJ)
 	@$(CC) $(CFLAGS) $(OBJ) $(PRINTF) $(MINILIBXCC) $(OPENGL) -o $(NAME)
 	@echo "$(GREEN)$(NAME) created$(DEF_COLOR)" 
 
