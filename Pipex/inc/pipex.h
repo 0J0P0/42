@@ -48,7 +48,8 @@ typedef struct s_pipex
 	char	*cmd2;
 	char	*cmd1_arg;
 	char	*cmd2_arg;
-	int		status;
+	int		status1;
+	int		status2;
 	pid_t	pid1;
 	pid_t	pid2;
 }	t_pipex;

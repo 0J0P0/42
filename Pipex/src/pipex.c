@@ -51,70 +51,67 @@ t_pipex	*init_pipex(char **argv)
 	// pid variables
 	data->pid1 = 0;
 	data->pid2 = 0;
-	// Open files
-	data->in_fd = open(data->infile, O_RDONLY);
-	if (data->in_fd == -1)
-		ft_error(ERR_NFD, 1);
-	data->out_fd = open(data->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (data->out_fd == -1)
-		ft_error(ERR_NFD, 1);
-	
+
+	// // Open files
+	// data->in_fd = open(data->infile, O_RDONLY);
+	// if (data->in_fd == -1)
+	// 	ft_error(ERR_NFD, 1);
+	// data->out_fd = open(data->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	// if (data->out_fd == -1)
+	// 	ft_error(ERR_NFD, 1);
+
 	return (data);
 }
 
 // Function that executes the commands. It has to follow the following command structure:
 // ./pipex < input_file command1 | command2 > output_file.
-int	pipex(t_pipex *data, char **envp)
+void	pipex(t_pipex *data, char **envp)
 {
-	int		fd[2];
-	int		status;
+	int fd[2];
+
+	ft_printf("infile\n");
 
 	// Create the pipe
 	if (pipe(fd) == -1)
 		ft_error(ERR_FD, 1);
+	
 	// Fork the first child
 	data->pid1 = fork();
 	if (data->pid1 == -1)
 		ft_error(ERR_PERR, 1);
 	else if (data->pid1 == 0)
 	{
-		// Close the read end of the pipe
+		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
-		// Redirect the output to the write end of the pipe
-		if (dup2(fd[1], STDOUT_FILENO) == -1)
-			ft_error(ERR_FD, 1);
-		// Close the write end of the pipe
 		close(fd[1]);
-		// Execute the first command
+		// execlp("grep", "grep", "a1", NULL);
 		if (execve(data->cmd1, ft_split(data->cmd1_arg, ' '), envp) == -1)
 			ft_error(ERR_CNF, 1);
 	}
+
 	// Fork the second child
 	data->pid2 = fork();
 	if (data->pid2 == -1)
 		ft_error(ERR_PERR, 1);
 	else if (data->pid2 == 0)
 	{
-		// Close the write end of the pipe
-		close(fd[1]);
-		// Redirect the input to the read end of the pipe
-		if (dup2(fd[0], STDIN_FILENO) == -1)
-			ft_error(ERR_FD, 1);
-		// Close the read end of the pipe
+		dup2(fd[0], STDIN_FILENO);
 		close(fd[0]);
-		// Execute the second command
+		close(fd[1]);
+		// execlp("ls", "ls", "-l", NULL);
 		if (execve(data->cmd2, ft_split(data->cmd2_arg, ' '), envp) == -1)
 			ft_error(ERR_CNF, 1);
 	}
-	// Close the read and write ends of the pipe
+
+	// Close the pipe
 	close(fd[0]);
 	close(fd[1]);
-	// Wait for the first child to finish
-	waitpid(data->pid1, &status, 0);
-	// Wait for the second child to finish
-	waitpid(data->pid2, &status, 0);
-	return (1);
+
+	// Wait for the children to finish
+	waitpid(data->pid1, NULL, 0);
+	waitpid(data->pid2, NULL, 0);
 }
+// https://code-vault.net/
 
 // Programm that simulates the pipe command in linux. It takes 4 arguments:
 // 1. The input file
@@ -125,7 +122,6 @@ int	pipex(t_pipex *data, char **envp)
 // ./pipex < input_file command1 | command2 > output_file
 int	main(int argc, char **argv, char **envp)
 {
-	int		ERR;
 	t_pipex	*data;
 
 	if (argc != 5)
@@ -135,10 +131,8 @@ int	main(int argc, char **argv, char **envp)
 	if (!data)
 		ft_error(ERR_MC, 1);
 	// Execute the commands
-	ERR = pipex(data, envp);
+	pipex(data, envp);
 	// Free the memory
 	// ft_free(data);  ///////////////////////////////////////
-	if (!ERR)
-		ft_error(ERR, 1);
 	return (0);
 }
