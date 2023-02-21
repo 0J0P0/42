@@ -13,13 +13,14 @@
 #include "../inc/fdf.h"
 
 // Function to create a point.
-t_point	ft_new_point(int x, int y, int z)
+t_point	ft_new_point(int x, int y, int z, int color)
 {
 	t_point	point;
 
 	point.x = x;
 	point.y = y;
 	point.z = z;
+	point.color = color;
 	return (point);
 }
 
@@ -47,28 +48,15 @@ int	main(int argc, char* argv[])
 
 	// Initialize mlx.
 	ft_mlx_init(&mlx);
+	ft_printf("mlx initialized\n");
 
-	// Draw a line splitting the map in two. Horizontal.
-	ft_draw_line(&mlx, ft_new_point(0, WIN_HEIGHT / 2, 0), ft_new_point(WIN_WIDTH, WIN_HEIGHT / 2, 0));
+	// Draw the map.
+	ft_draw_map(&mlx, map);
 
-	// Print the map data.
-	ft_printf("----------------------------------\n");
-	ft_printf("Map data: %d x %d\n", map.width, map.height);
-	// Print min and max z
-	ft_printf("Min z: %d\n", map.min_z);
-	ft_printf("Max z: %d\n", map.max_z);
-	// Print all the points. As (x, y, z).
-	for (int i = 0; i < map.height; i++)
-	{
-		for (int j = 0; j < map.width; j++)
-			ft_printf("(%d) and color: %d\n", map.points[i][j].z, map.points[i][j].color);
-		ft_printf("\n");
-	}
-	ft_printf("----------------------------------\n");
-
-
+	// Wait for the user to close the window.
 	mlx_loop(mlx.mlx);
-	ft_printf("Tot be\n");
+
+	// Free the map.
 	map = ft_free_map(map);
 	return (0);
 }

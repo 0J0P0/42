@@ -6,7 +6,7 @@
 /*   By: jzaldiva <jzaldiva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:04:50 by jzaldiva          #+#    #+#             */
-/*   Updated: 2023/02/21 14:06:55 by jzaldiva         ###   ########.fr       */
+/*   Updated: 2023/02/21 16:13:59 by jzaldiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ int	ft_steps(t_point start, t_point end)
 	int	dy;
 
 	// Compute the number of steps.
-	dx = abs(end.x - start.x);
-	dy = abs(end.y - start.y);
+	dx = fabs(end.x - start.x);
+	dy = fabs(end.y - start.y);
 	// Return the maximum number of steps.
 	return (dx > dy ? dx : dy);
 }
@@ -60,6 +60,7 @@ int	ft_color(t_point start, t_point end, int steps)
 	return (red << 16 | green << 8 | blue);
 }
 
+
 // Function to draw a line.
 // Parameters:
 // - mlx structure.
@@ -67,11 +68,15 @@ int	ft_color(t_point start, t_point end, int steps)
 // - end point.
 void	ft_draw_line(t_mlx *mlx, t_point start, t_point end)
 {
+	ft_printf("line\n");
 	int	steps;
 	int	x_inc;
 	int	y_inc;
 	int	x;
 	int	y;
+
+	// Set a isometric projection.
+	ft_iso(mlx, &start, &end);
 
 	// Compute the number of steps.
 	steps = ft_steps(start, end);

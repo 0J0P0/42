@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+// after a coment in the .h, make file doesnt notice
+
 #ifndef FDF_H
 # define FDF_H
 
@@ -35,19 +37,19 @@
 # define ERR_MLX	(int)9
 
 // Define the width and height of the window.
-# define WIN_WIDTH	(int)1920
+# define WIN_WIDTH	(int)1080
 # define WIN_HEIGHT	(int)1080
 
 // Define the color of the min and max points in the map.
 # define MIN_COLOR	(int)0xFFFFFF
-# define MAX_COLOR	(int)0xFF0000
+# define MAX_COLOR	(int)0xFF0000  // red
 /* ******************************** STRUCTURES ******************************** */
 typedef struct	s_point
 {
-	int			x;
-	int			y;
-	int			z;
-	int			color;
+	double			x;
+	double			y;
+	int				z;
+	int				color;
 }				t_point;
 
 // Struct of a map, containing the matrix of points, the width and height of the map, and the min and max points in terms of z with its color.
@@ -66,10 +68,12 @@ typedef struct	s_mlx
 {
 	void		*mlx;
 	void		*win;
-	int			proj;
-	int			scale;
-	int			x_offset;
-	int			y_offset;
+	void		*img;
+	int			*data;
+	int			bpp;
+	int			size_line;
+	int			endian;
+	double		angle;
 }				t_mlx;
 
 /* ******************************** PROTOTYPES ******************************** */
@@ -91,5 +95,9 @@ char	*get_next_line(int fd);
 void	ft_draw_line(t_mlx *mlx, t_point p1, t_point p2);
 
 void	ft_mlx_init(t_mlx *mlx);
+
+void	ft_draw_map(t_mlx *mlx, t_map map);
+
+void	ft_iso(t_mlx *mlx, t_point *start, t_point *end);
 
 # endif

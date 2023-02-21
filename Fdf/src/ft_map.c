@@ -6,7 +6,7 @@
 /*   By: jzaldiva <jzaldiva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 15:37:41 by jzaldiva          #+#    #+#             */
-/*   Updated: 2023/02/16 20:23:01 by jzaldiva         ###   ########.fr       */
+/*   Updated: 2023/02/21 16:28:44 by jzaldiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,9 +144,9 @@ t_map	ft_read_map(char *file)
 		while (j < map.width)
 		{
 			// Get the x coordinate.
-			map.points[i][j].x = i;
+			map.points[i][j].x = j;
 			// Get the y coordinate.
-			map.points[i][j].y = j;
+			map.points[i][j].y = i;
 			// Get the z coordinate.
 			tmp = ft_atoi(line);
 			if (tmp > map.max_z)
@@ -175,24 +175,124 @@ t_map	ft_read_map(char *file)
 }
 
 
-// // Function to draw the map.
-// void	ft_draw_map(t_map map, t_mlx *mlx)
-// {
-// 	int	i;
-// 	int	j;
+// Fucntion to escalate the map. The map is scaled to fit the window in an isometric
+// projection.
+void	ft_escalate_map(t_map *map)
+{
+	int		i;
+	int		j;
+	double	scale;
 
-// 	i = 0;
-// 	while (i < map.height)
-// 	{
-// 		j = 0;
-// 		while (j < map.width)
-// 		{
-// 			if (j < map.width - 1)
-// 				ft_draw_line(map.points[i][j], map.points[i][j + 1], mlx);
-// 			if (i < map.height - 1)
-// 				ft_draw_line(map.points[i][j], map.points[i + 1][j], mlx);
-// 			j++;
-// 		}
-// 		i++;
-// 	}
-// }
+	// Get the scale.
+	scale = (double)WIN_WIDTH / (double)map->width;
+	if (scale > (double)WIN_HEIGHT / (double)map->height)
+		scale = (double)WIN_HEIGHT / (double)map->height;
+	// Escalate the map.
+	i = 0;
+	while (i < map->height)
+	{
+		j = 0;
+		while (j < map->width)
+		{
+			map->points[i][j].x *= scale;
+			map->points[i][j].y *= scale;
+			map->points[i][j].z *= scale;
+			j++;
+		}
+		i++;
+	}
+}
+
+
+// Function to move the map, so that the center of the map is in the center of the window.
+void	ft_move_map(t_map *map, int x, int y)
+{
+	int		i;
+	int		j;
+	double	x_center;
+	double	y_center;
+
+	// Get the center of the map.
+	x_center = 0;
+	y_center = 0;
+	i = 0;
+	while (i < map->height)
+	{
+		j = 0;
+		while (j < map->width)
+		{
+			x_center += map->points[i][j].x;
+			y_center += map->points[i][j].y;
+			j++;
+		}
+		i++;
+	}
+	x_center /= map->height * map->width;
+	y_center /= map->height * map->width;
+	// Move the map.
+	i = 0;
+	while (i < map->height)
+	{
+		j = 0;
+		while (j < map->width)
+		{
+			map->points[i][j].x += x - x_center;
+			map->points[i][j].y += y - y_center;
+			j++;
+		}
+		i++;
+	}
+}
+
+
+// Function to set an isometric projection to the map.
+void	ft_iso_map(t_mlx *mlx, t_map *map)
+{
+	int		i;
+	int		j;
+
+	i = 0;
+	while (i < map->height)
+	{
+		j = 0;
+		while (j < map->width)
+		{
+			ft_iso(mlx, &map->points[i][j], &map->points[i][j]);
+			j++;
+		}
+		i++;
+	}
+}
+
+// Function to draw the map. First, escalates the map to fit the window.
+// Then, draws the map.
+void	ft_draw_map(t_mlx *mlx, t_map map)
+{
+	int	i;	
+	int	j;
+
+	// // Set an isometric projection.
+	// ft_iso_map(mlx, &map);
+	// Escalate the map.
+	ft_escalate_map(&map);
+	// Move the map to the center of the window.
+	ft_move_map(&map, WIN_WIDTH / 2, WIN_HEIGHT / 2);
+	ft_printf("max_z = %d\n", map.max_z);
+	// Draw the map.
+	i = 0;
+	while (i < map.height)
+	{
+		j = 0;
+		while (j < map.width)
+		{
+			if (j < map.width - 1)
+				ft_draw_line(mlx, map.points[i][j], map.points[i][j + 1]);
+			if (i < map.height - 1)
+				ft_draw_line(mlx, map.points[i][j], map.points[i + 1][j]);
+			j++;
+		}
+		i++;
+	}
+	ft_printf("Map drawn.\n");
+	// mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
+}
