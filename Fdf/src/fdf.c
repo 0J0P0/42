@@ -12,16 +12,16 @@
 
 #include "../inc/fdf.h"
 
-// // Function to create a point.
-// t_point	ft_new_point(int x, int y, int z)
-// {
-// 	t_point	point;
+// Function to create a point.
+t_point	ft_new_point(int x, int y, int z)
+{
+	t_point	point;
 
-// 	point.x = x;
-// 	point.y = y;
-// 	point.z = z;
-// 	return (point);
-// }
+	point.x = x;
+	point.y = y;
+	point.z = z;
+	return (point);
+}
 
 
 // Programm to create a wireframe model of a relief landscape.
@@ -31,7 +31,7 @@
 int	main(int argc, char* argv[])
 {
 	t_map	map;
-	// t_mlx	mlx;
+	t_mlx	mlx;
 
 	// Check if the number of parameters is correct.
 	if (argc != 2)
@@ -46,10 +46,10 @@ int	main(int argc, char* argv[])
 		ft_error(ERR_MC, 1);
 
 	// Initialize mlx.
-	// mlx = ft_mlx_init();
+	ft_mlx_init(&mlx);
 
-	// Draw a line splitting the map in two.
-	// ft_draw_line(&mlx, ft_new_point(0, 500, 0), ft_new_point(1000, 500, 0));
+	// Draw a line splitting the map in two. Horizontal.
+	ft_draw_line(&mlx, ft_new_point(0, WIN_HEIGHT / 2, 0), ft_new_point(WIN_WIDTH, WIN_HEIGHT / 2, 0));
 
 	// Print the map data.
 	ft_printf("----------------------------------\n");
@@ -67,7 +67,7 @@ int	main(int argc, char* argv[])
 	ft_printf("----------------------------------\n");
 
 
-	// mlx_loop(mlx.mlx);
+	mlx_loop(mlx.mlx);
 	ft_printf("Tot be\n");
 	map = ft_free_map(map);
 	return (0);

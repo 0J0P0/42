@@ -90,4 +90,6 @@ char	*get_next_line(int fd);
 /* ******************************** DRAW ******************************** */
 void	ft_draw_line(t_mlx *mlx, t_point p1, t_point p2);
 
+void	ft_mlx_init(t_mlx *mlx);
+
 # endif
