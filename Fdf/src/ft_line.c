@@ -6,7 +6,7 @@
 /*   By: jzaldiva <jzaldiva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:04:50 by jzaldiva          #+#    #+#             */
-/*   Updated: 2023/02/21 16:13:59 by jzaldiva         ###   ########.fr       */
+/*   Updated: 2023/02/22 07:59:49 by jzaldiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,9 @@ void	ft_draw_line(t_mlx *mlx, t_point start, t_point end)
 	int	x;
 	int	y;
 
+	ft_printf("angle: %d\n", mlx->angle);
 	// Set a isometric projection.
-	ft_iso(mlx, &start, &end);
+	// ft_iso(mlx, &start, &end);
 
 	// Compute the number of steps.
 	steps = ft_steps(start, end);
@@ -89,7 +90,7 @@ void	ft_draw_line(t_mlx *mlx, t_point start, t_point end)
 	// Draw the line.
 	while (steps--)
 	{
-		mlx_pixel_put(mlx->mlx, mlx->win, x, y, ft_color(start, end, steps));
+		// mlx_pixel_put(mlx->mlx, mlx->win, x, y, ft_color(start, end, steps));
 		x += x_inc;
 		y += y_inc;
 	}

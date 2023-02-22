@@ -47,14 +47,29 @@ int	main(int argc, char* argv[])
 		ft_error(ERR_MC, 1);
 
 	// Initialize mlx.
-	ft_mlx_init(&mlx);
+	// ft_mlx_init(&mlx);
 	ft_printf("mlx initialized\n");
 
-	// Draw the map.
-	ft_draw_map(&mlx, map);
+	int i = 0;
+	while (i < map.height)
+	{
+		int j = 0;
+		while (j < map.width)
+		{
+			ft_printf("%d ", map.points[i][j].z);
+			if (map.points[i][j].z < 10)
+				ft_printf(" ");
+			j++;
+		}
+		ft_printf("\n");
+		i++;
+	}
+
+	// // Draw the map.
+	// ft_draw_map(&mlx, map);
 
 	// Wait for the user to close the window.
-	mlx_loop(mlx.mlx);
+	// mlx_loop(mlx.mlx);
 
 	// Free the map.
 	map = ft_free_map(map);
