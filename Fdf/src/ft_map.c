@@ -6,11 +6,7 @@
 /*   By: jzaldiva <jzaldiva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 15:37:41 by jzaldiva          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2023/02/21 16:42:36 by jzaldiva         ###   ########.fr       */
-=======
-/*   Updated: 2023/02/22 08:12:26 by jzaldiva         ###   ########.fr       */
->>>>>>> a8003796873c4f87b8aa8eb0962f27d4fe0088ac
+/*   Updated: 2023/03/02 14:13:15 by jzaldiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +101,6 @@ t_map	ft_read_map(char *file)
 	map.max_color = MAX_COLOR;
 	// Get the width of the map.
 	map.width = ft_count_points(line, ' ');
-	ft_printf("Width: %d\n", map.width); ///////////////////////////////
 	// Get the height of the map.
 	map.height = 1;
 	free(line);
@@ -113,9 +108,8 @@ t_map	ft_read_map(char *file)
 	while (line)
 	{
 		map.height++;
-		ft_printf("Width: %d\n", ft_count_points(line, ' ')); /////////////////
 		free(line);
-		line = get_next_line(fd);		
+		line = get_next_line(fd);
 	}
 	free(line);
 	// Allocate memory for the map.
@@ -141,7 +135,7 @@ t_map	ft_read_map(char *file)
 
 	map.max_z = 0;
 	map.min_z = 0;
-	
+
 	// Read the file again.
 	i = 0;
 	line = get_next_line(fd);
@@ -153,18 +147,11 @@ t_map	ft_read_map(char *file)
 			tmp = ft_atoi(line);
 			map.points[i][j].x = j;
 			map.points[i][j].y = i;
-<<<<<<< HEAD
-			// Get the z coordinate.
-			tmp = ft_atoi(line);
-			ft_printf("Z: %d\n", tmp); ///////////////////////////////////////
-=======
 			map.points[i][j].z = tmp;
->>>>>>> a8003796873c4f87b8aa8eb0962f27d4fe0088ac
 			if (tmp > map.max_z)
 				map.max_z = tmp;
 			if (tmp < map.min_z)
 				map.min_z = tmp;
-			ft_printf("%d ", tmp);
 			while (*line != ' ' && *line)
 				line++;
 			while (*line == ' ' && *line)
@@ -179,20 +166,6 @@ t_map	ft_read_map(char *file)
 	fd = close(fd);
 	if (fd == -1)
 		return (ft_free_map(map));
-
-	// Print the color of each point.
-	i = 0;
-	while (i < map.height)
-	{
-		j = 0;
-		while (j < map.width)
-		{
-			ft_printf("%d ", map.points[i][j].z);
-			j++;
-		}
-		ft_printf("\n");
-		i++;
-	}
 
 	ft_color_map(&map);
 	return (map);
@@ -270,48 +243,53 @@ void	ft_move_map(t_map *map, int x, int y)
 
 
 // Function to set an isometric projection to the map.
-// void	ft_iso_map(t_mlx *mlx, t_map *map)
-// {
-// 	int		i;
-// 	int		j;
+void	ft_iso_map(t_mlx *mlx, t_map *map)
+{
+	int		i;
+	int		j;
 
-// 	i = 0;
-// 	while (i < map->height)
-// 	{
-// 		j = 0;
-// 		while (j < map->width)
-// 		{
-// 			ft_iso(mlx, &map->points[i][j], &map->points[i][j]);
-// 			j++;
-// 		}
-// 		i++;
-// 	}
-// }
+	i = 0;
+	while (i < map->height)
+	{
+		j = 0;
+		while (j < map->width)
+		{
+			ft_iso(mlx, &map->points[i][j], &map->points[i][j]);
+			j++;
+		}
+		i++;
+	}
+}
 
 // Function to draw the map. First, escalates the map to fit the window.
 // Then, draws the map.
 void	ft_draw_map(t_mlx *mlx, t_map map)
 {
-	int	i;	
-	int	j;	
+	int	i;
+	int	j;
 
-	// Escalate the map.
-	ft_escalate_map(&map);
+	// Set the isometric projection.
+	ft_iso_map(mlx, &map);
 	// Move the map.
 	ft_move_map(&map, WIN_WIDTH / 2, WIN_HEIGHT / 2);
+	// // Escalate the map.
+	// ft_escalate_map(&map);
 
-	// Print the color of each point.
+
+	// Draw the map.
 	i = 0;
 	while (i < map.height)
 	{
 		j = 0;
 		while (j < map.width)
 		{
-			ft_printf("%d ", map.points[i][j].z);
+			// if (j < map.width - 1)
+			// 	ft_draw_line(mlx, map.points[i][j], map.points[i][j + 1]);
+			// if (i < map.height - 1)
+			// 	ft_draw_line(mlx, map.points[i][j], map.points[i + 1][j]);
 			mlx_pixel_put(mlx->mlx, mlx->win, map.points[i][j].x, map.points[i][j].y, map.points[i][j].color);
 			j++;
 		}
-		ft_printf("\n");
 		i++;
 	}
 
