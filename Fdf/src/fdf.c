@@ -48,7 +48,6 @@ int	main(int argc, char* argv[])
 
 	// Initialize mlx.
 	ft_mlx_init(&mlx);
-	ft_printf("mlx initialized\n");
 
 	// Draw the map.
 	ft_draw_map(&mlx, map);

@@ -26,10 +26,6 @@ void	ft_mlx_init(t_mlx *mlx)
 
     // Set angle
     mlx->angle = 0.523599; // 30 degrees in radians
-    // Set scale
-    mlx->scale = 20;
-    // Set z scale
-    // mlx->z_scale = 1;
 
 
     mlx->img = mlx_new_image(mlx->mlx, WIN_WIDTH, WIN_HEIGHT);

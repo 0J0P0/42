@@ -6,7 +6,7 @@
 /*   By: jzaldiva <jzaldiva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 15:37:41 by jzaldiva          #+#    #+#             */
-/*   Updated: 2023/02/21 16:28:44 by jzaldiva         ###   ########.fr       */
+/*   Updated: 2023/02/21 16:42:36 by jzaldiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ t_map	ft_read_map(char *file)
 	map.max_color = MAX_COLOR;
 	// Get the width of the map.
 	map.width = ft_count_points(line, ' ');
+	ft_printf("Width: %d\n", map.width); ///////////////////////////////
 	// Get the height of the map.
 	map.height = 1;
 	free(line);
@@ -108,6 +109,7 @@ t_map	ft_read_map(char *file)
 	while (line)
 	{
 		map.height++;
+		ft_printf("Width: %d\n", ft_count_points(line, ' ')); /////////////////
 		free(line);
 		line = get_next_line(fd);		
 	}
@@ -149,6 +151,7 @@ t_map	ft_read_map(char *file)
 			map.points[i][j].y = i;
 			// Get the z coordinate.
 			tmp = ft_atoi(line);
+			ft_printf("Z: %d\n", tmp); ///////////////////////////////////////
 			if (tmp > map.max_z)
 				map.max_z = tmp;
 			if (tmp < map.min_z)
@@ -169,6 +172,20 @@ t_map	ft_read_map(char *file)
 	fd = close(fd);
 	if (fd == -1)
 		return (ft_free_map(map));
+
+	// Print the color of each point.
+	i = 0;
+	while (i < map.height)
+	{
+		j = 0;
+		while (j < map.width)
+		{
+			ft_printf("%d ", map.points[i][j].z);
+			j++;
+		}
+		ft_printf("\n");
+		i++;
+	}
 
 	ft_color_map(&map);
 	return (map);
@@ -269,30 +286,28 @@ void	ft_iso_map(t_mlx *mlx, t_map *map)
 void	ft_draw_map(t_mlx *mlx, t_map map)
 {
 	int	i;	
-	int	j;
+	int	j;	
 
-	// // Set an isometric projection.
-	// ft_iso_map(mlx, &map);
 	// Escalate the map.
 	ft_escalate_map(&map);
-	// Move the map to the center of the window.
+	// Move the map.
 	ft_move_map(&map, WIN_WIDTH / 2, WIN_HEIGHT / 2);
-	ft_printf("max_z = %d\n", map.max_z);
-	// Draw the map.
+
+	// Print the color of each point.
 	i = 0;
 	while (i < map.height)
 	{
 		j = 0;
 		while (j < map.width)
 		{
-			if (j < map.width - 1)
-				ft_draw_line(mlx, map.points[i][j], map.points[i][j + 1]);
-			if (i < map.height - 1)
-				ft_draw_line(mlx, map.points[i][j], map.points[i + 1][j]);
+			ft_printf("%d ", map.points[i][j].z);
+			mlx_pixel_put(mlx->mlx, mlx->win, map.points[i][j].x, map.points[i][j].y, map.points[i][j].color);
 			j++;
 		}
+		ft_printf("\n");
 		i++;
 	}
+
 	ft_printf("Map drawn.\n");
 	// mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);
 }
