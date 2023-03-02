@@ -98,6 +98,6 @@ void	ft_mlx_init(t_mlx *mlx);
 
 void	ft_draw_map(t_mlx *mlx, t_map map);
 
-void	ft_iso(t_mlx *mlx, t_point *start, t_point *end);
+void	ft_iso(t_mlx *mlx, t_point *point);
 
 # endif

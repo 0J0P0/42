@@ -12,6 +12,7 @@
 
 #include "../inc/fdf.h"
 
+
 // Function to create a point.
 t_point	ft_new_point(int x, int y, int z, int color)
 {
@@ -46,9 +47,23 @@ int	main(int argc, char* argv[])
 	if (!map.points)
 		ft_error(ERR_MC, 1);
 
+	// int i = 0;
+	// while (i < map.height)
+	// {
+	// 	int j = 0;
+	// 	while (j < map.width)
+	// 	{
+	// 		printf("(x: %f, y: %f, z: %i) ", map.points[i][j].x, map.points[i][j].y, map.points[i][j].z);
+	// 		j++;
+	// 	}
+	// 	printf("\n");
+	// 	i++;
+	// }
+
 	// Initialize mlx.
 	ft_mlx_init(&mlx);
 	ft_printf("mlx initialized\n");
+
 
 	// Draw the map.
 	ft_draw_map(&mlx, map);

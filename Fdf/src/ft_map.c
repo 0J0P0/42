@@ -6,7 +6,7 @@
 /*   By: jzaldiva <jzaldiva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 15:37:41 by jzaldiva          #+#    #+#             */
-/*   Updated: 2023/03/02 14:13:15 by jzaldiva         ###   ########.fr       */
+/*   Updated: 2023/03/02 17:20:00 by jzaldiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ t_map	ft_read_map(char *file)
 	// Assign color to the min and max z.
 	map.min_color = MIN_COLOR;
 	map.max_color = MAX_COLOR;
+
 	// Get the width of the map.
 	map.width = ft_count_points(line, ' ');
 	// Get the height of the map.
@@ -112,6 +113,7 @@ t_map	ft_read_map(char *file)
 		line = get_next_line(fd);
 	}
 	free(line);
+
 	// Allocate memory for the map.
 	map.points = (t_point **)malloc(sizeof(t_point *) * map.height);
 	if (!map.points)
@@ -158,6 +160,7 @@ t_map	ft_read_map(char *file)
 				line++;
 			j++;
 		}
+		// ft_printf("line: %s\n", line);
 		i++;
 		line = get_next_line(fd);
 	}
@@ -172,18 +175,65 @@ t_map	ft_read_map(char *file)
 }
 
 
-// Fucntion to escalate the map. The map is scaled to fit the window in an isometric
-// projection.
+// Function to escalate the map. The map is escalated depending the width and height of the window.
+// The map is escalated so that it fits in the window. It has to take into acount the isometric projection.
+// SOOOOOOOOOOOOOOOOOOSSSSSSSSSSS
 void	ft_escalate_map(t_map *map)
 {
 	int		i;
 	int		j;
-	double	scale;
+	double	x_center;
+	double	y_center;
+	double	x_max;
+	double	y_max;
+	double	x_min;
+	double	y_min;
+	double	x_escalate;
+	double	y_escalate;
 
-	// Get the scale.
-	scale = (double)WIN_WIDTH / (double)map->width;
-	if (scale > (double)WIN_HEIGHT / (double)map->height)
-		scale = (double)WIN_HEIGHT / (double)map->height;
+	// Get the center of the map. For the isometric projection, the center is the center of the x and y axis.
+	x_center = 0;
+	y_center = 0;
+	i = 0;
+	while (i < map->height)
+	{
+		j = 0;
+		while (j < map->width)
+		{
+			x_center += map->points[i][j].x;
+			y_center += map->points[i][j].y;
+			j++;
+		}
+		i++;
+	}
+	x_center /= map->height * map->width;
+	y_center /= map->height * map->width;
+	// Get the max and min x and y.
+	x_max = 0;
+	y_max = 0;
+	x_min = 0;
+	y_min = 0;
+	i = 0;
+	while (i < map->height)
+	{
+		j = 0;
+		while (j < map->width)
+		{
+			if (map->points[i][j].x > x_max)
+				x_max = map->points[i][j].x;
+			if (map->points[i][j].x < x_min)
+				x_min = map->points[i][j].x;
+			if (map->points[i][j].y > y_max)
+				y_max = map->points[i][j].y;
+			if (map->points[i][j].y < y_min)
+				y_min = map->points[i][j].y;
+			j++;
+		}
+		i++;
+	}
+	// Get the escalates.
+	x_escalate = (double)WIN_WIDTH / (x_max - x_min) + 25;
+	y_escalate = (double)WIN_HEIGHT / (y_max - y_min) + 25;
 	// Escalate the map.
 	i = 0;
 	while (i < map->height)
@@ -191,9 +241,8 @@ void	ft_escalate_map(t_map *map)
 		j = 0;
 		while (j < map->width)
 		{
-			map->points[i][j].x *= scale;
-			map->points[i][j].y *= scale;
-			map->points[i][j].z *= scale;
+			map->points[i][j].x = (map->points[i][j].x - x_center) * x_escalate + x_center;
+			map->points[i][j].y = (map->points[i][j].y - y_center) * y_escalate + y_center;
 			j++;
 		}
 		i++;
@@ -254,7 +303,7 @@ void	ft_iso_map(t_mlx *mlx, t_map *map)
 		j = 0;
 		while (j < map->width)
 		{
-			ft_iso(mlx, &map->points[i][j], &map->points[i][j]);
+			ft_iso(mlx, &map->points[i][j]);
 			j++;
 		}
 		i++;
@@ -272,22 +321,29 @@ void	ft_draw_map(t_mlx *mlx, t_map map)
 	ft_iso_map(mlx, &map);
 	// Move the map.
 	ft_move_map(&map, WIN_WIDTH / 2, WIN_HEIGHT / 2);
-	// // Escalate the map.
-	// ft_escalate_map(&map);
+	// // // Escalate the map.
+	ft_escalate_map(&map);
 
 
 	// Draw the map.
 	i = 0;
+	int b = 1;
 	while (i < map.height)
 	{
 		j = 0;
 		while (j < map.width)
 		{
-			// if (j < map.width - 1)
+			// if (b)
+			// {
 			// 	ft_draw_line(mlx, map.points[i][j], map.points[i][j + 1]);
-			// if (i < map.height - 1)
-			// 	ft_draw_line(mlx, map.points[i][j], map.points[i + 1][j]);
-			mlx_pixel_put(mlx->mlx, mlx->win, map.points[i][j].x, map.points[i][j].y, map.points[i][j].color);
+			// 	b = 0;
+			// }
+			// Connect the point with the four points around it. (if they exist)
+			if (i < map.height - 1)
+				ft_draw_line(mlx, map.points[i][j], map.points[i + 1][j]);
+			if (j < map.width - 1)
+				ft_draw_line(mlx, map.points[i][j], map.points[i][j + 1]);
+			// mlx_pixel_put(mlx->mlx, mlx->win, map.points[i][j].x, map.points[i][j].y, map.points[i][j].color);
 			j++;
 		}
 		i++;

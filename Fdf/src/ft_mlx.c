@@ -24,8 +24,8 @@ void	ft_mlx_init(t_mlx *mlx)
     if (!mlx->win)
         ft_error(ERR_MLX, 1);
 
-    // Set angle
-    mlx->angle = 0.523599; // 30 degrees in radians
+    // Set angle to 10 degrees
+    mlx->angle = 30 * M_PI / 180;
     // Set z scale
     // mlx->z_scale = 1;
 
