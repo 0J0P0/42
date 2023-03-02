@@ -6,7 +6,11 @@
 /*   By: jzaldiva <jzaldiva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 15:37:41 by jzaldiva          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2023/02/21 16:42:36 by jzaldiva         ###   ########.fr       */
+=======
+/*   Updated: 2023/02/22 08:12:26 by jzaldiva         ###   ########.fr       */
+>>>>>>> a8003796873c4f87b8aa8eb0962f27d4fe0088ac
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,34 +138,37 @@ t_map	ft_read_map(char *file)
 	fd = open(file, O_RDONLY);
 	if (fd == -1)
 		return (ft_free_map(map));
-	i = 0;
 
-	// Read the file again.
 	map.max_z = 0;
 	map.min_z = 0;
+	
+	// Read the file again.
+	i = 0;
 	line = get_next_line(fd);
 	while (line)
 	{
 		j = 0;
 		while (j < map.width)
 		{
-			// Get the x coordinate.
+			tmp = ft_atoi(line);
 			map.points[i][j].x = j;
-			// Get the y coordinate.
 			map.points[i][j].y = i;
+<<<<<<< HEAD
 			// Get the z coordinate.
 			tmp = ft_atoi(line);
 			ft_printf("Z: %d\n", tmp); ///////////////////////////////////////
+=======
+			map.points[i][j].z = tmp;
+>>>>>>> a8003796873c4f87b8aa8eb0962f27d4fe0088ac
 			if (tmp > map.max_z)
 				map.max_z = tmp;
 			if (tmp < map.min_z)
 				map.min_z = tmp;
-			map.points[i][j].z = tmp;
-			// Get the color.
-			map.points[i][j].color = 0xFFFFFF;
-			// Move to the next point.
-			line = ft_strchr(line, ' ');
-			line++;
+			ft_printf("%d ", tmp);
+			while (*line != ' ' && *line)
+				line++;
+			while (*line == ' ' && *line)
+				line++;
 			j++;
 		}
 		i++;
@@ -263,23 +270,23 @@ void	ft_move_map(t_map *map, int x, int y)
 
 
 // Function to set an isometric projection to the map.
-void	ft_iso_map(t_mlx *mlx, t_map *map)
-{
-	int		i;
-	int		j;
+// void	ft_iso_map(t_mlx *mlx, t_map *map)
+// {
+// 	int		i;
+// 	int		j;
 
-	i = 0;
-	while (i < map->height)
-	{
-		j = 0;
-		while (j < map->width)
-		{
-			ft_iso(mlx, &map->points[i][j], &map->points[i][j]);
-			j++;
-		}
-		i++;
-	}
-}
+// 	i = 0;
+// 	while (i < map->height)
+// 	{
+// 		j = 0;
+// 		while (j < map->width)
+// 		{
+// 			ft_iso(mlx, &map->points[i][j], &map->points[i][j]);
+// 			j++;
+// 		}
+// 		i++;
+// 	}
+// }
 
 // Function to draw the map. First, escalates the map to fit the window.
 // Then, draws the map.

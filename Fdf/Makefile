@@ -15,7 +15,7 @@ NAME				=	 fdf
 
 SRC_DIR				=	 src/
 OBJ_DIR				=	 obj/
-CFLAGS				=	 -Wall -Werror -Wextra
+CFLAGS				=	 -Wall# -Werror -Wextra
 
 INCLUDE		 		=	 inc/
 LIB					=	 lib/
@@ -59,9 +59,9 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	@make -C $(LIBFT_DIR)
 	@make -C $(PRINTF_DIR)
-	@make -C $(MINILIBX_DIR)
-	@gcc $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(PRINTF) $(MINILIBXCC) $(OPENGL)
-#	@gcc $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(PRINTF)
+#	@make -C $(MINILIBX_DIR)
+#	@gcc $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(PRINTF) $(MINILIBXCC) $(OPENGL)
+	@gcc $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(PRINTF)
 	@echo "$(GREEN)$(NAME) created$(DEF_COLOR)"
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
